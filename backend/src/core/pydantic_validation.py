@@ -25,7 +25,7 @@ def pydantic_validation(view):
 
     def get_response_object(view_res):
         if not isinstance(view_res, tuple):
-            view_res = (view_res, )
+            view_res = (view_res,)
 
         if len(view_res) == 1:
             view_res = (view_res[0], None)
@@ -47,10 +47,9 @@ def pydantic_validation(view):
         if status_code is None:
             status_code = 200
 
-        return Response(json.dumps(content),
-                        status=status_code,
-                        content_type='application/json')
-
+        return Response(
+            json.dumps(content), status=status_code, content_type="application/json"
+        )
 
     @wraps(view)
     def wrapper(*args, **kwargs):
@@ -66,6 +65,5 @@ def pydantic_validation(view):
             kwargs[arg_name] = item
 
         return get_response_object(view(*args, **kwargs))
-
 
     return wrapper
