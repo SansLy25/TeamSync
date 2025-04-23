@@ -28,7 +28,6 @@ services:
 
     depends_on:
       - db
-      - redis
     networks:
       - main
 
@@ -49,9 +48,10 @@ services:
   nginx:
     build: ./nginx
     ports:
-      - "3333:80"
+      - "80:80"
     depends_on:
-      - mini_app
+    # - mini_app
+      - api
     volumes:
       - ./src/media:/app/src/media
     networks:

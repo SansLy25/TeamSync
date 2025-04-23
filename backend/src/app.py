@@ -20,7 +20,7 @@ CONFIG = {
         "POSTGRES_DB": getenv("POSTGRES_DB", "postgres"),
     },
     "DEBUG": getenv("DEBUG", "True").lower() == "true",
-    "SECRET_KEY": getenv("SECRET_KEY", "secret_key"),
+    "SECRET_KEY": getenv("SECRET_KEY", "50jhfhK6BXmcSTsADWXdy3jXiVmO6D6n"),
 }
 
 
