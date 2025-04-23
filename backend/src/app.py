@@ -2,10 +2,12 @@ from flask import Flask
 from dotenv import load_dotenv
 from os import getenv
 
-from database.create_db import get_db_and_migrate_objects
+from extensions import db, migrate, jwt
+
+from users.views import users_bp
 
 load_dotenv()
-app = Flask(__name__)
+
 
 CONFIG = {
     # Дополнительные параметры конфигурации добавлять в этот словарь
@@ -18,11 +20,20 @@ CONFIG = {
         "POSTGRES_DB": getenv("POSTGRES_DB", "postgres"),
     },
     "DEBUG": getenv("DEBUG", "True").lower() == "true",
-    "SECRET_KEY": getenv("SECRET_KEY", "secret_key")
+    "SECRET_KEY": getenv("SECRET_KEY", "secret_key"),
 }
 
 
-def set_config():
+def create_app():
+    app = Flask(__name__)
+    set_config(app)
+    register_blueprints(app)
+    register_extensions(app)
+
+    return app
+
+
+def set_config(app):
     for param in CONFIG:
         app.config[param] = CONFIG[param]
 
@@ -34,6 +45,12 @@ def set_config():
     )
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-set_config()
 
-db, migrate = get_db_and_migrate_objects(app)
+def register_blueprints(app):
+    app.register_blueprint(users_bp)
+
+
+def register_extensions(app):
+    db.init_app(app)
+    migrate.init_app(app, db, directory="database/migrations/")
+    jwt.init_app(app)

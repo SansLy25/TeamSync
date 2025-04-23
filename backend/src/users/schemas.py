@@ -1,18 +1,21 @@
 import re
 
-from pydantic import BaseModel, constr, model_validator, ValidationError
+from pydantic import BaseModel, constr, field_validator
 
 
 class UserSchemaLogin(BaseModel):
     password: constr(min_length=8, max_length=60)
     username: str
 
-    @model_validator(mode='after')
-    def validate_password(self):
+    @field_validator('password')
+    def validate_password(cls, password):
         pattern = r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$"
-        if re.fullmatch(pattern, self.password):
-            return self
+        if re.match(pattern, password):
+            return password
 
-        raise ValidationError("The password does not "
-                              "meet security standards.r")
+        raise ValueError("The password does not "
+                         "meet security standards.")
 
+
+class TokenSchema(BaseModel):
+    token: str

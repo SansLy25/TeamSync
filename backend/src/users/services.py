@@ -1,7 +1,9 @@
-import hashlib
+from sqlalchemy.exc import IntegrityError
+from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.exceptions import Conflict
 
 from app import db
-from models import User
+from users.models import User
 
 class UserService:
     @staticmethod
@@ -9,8 +11,24 @@ class UserService:
         user = db.session.query(User).get(id)
         return user
 
-
     @staticmethod
     def create(password, username):
-        pass
+        try:
+            hashed_pass = generate_password_hash(password, method="pbkdf2:sha256")
+            user = User(password=hashed_pass, username=username)
+            db.session.add(user)
+            db.session.commit()
+        except IntegrityError:
+            raise Conflict("User with this email already exists")
+        return user
 
+    @staticmethod
+    def get_by_pass_username(password, username):
+        user = db.session.query(User).filter_by(username=username).first()
+        if not user:
+            return None
+
+        if check_password_hash(user.password, password):
+            return user
+
+        return None

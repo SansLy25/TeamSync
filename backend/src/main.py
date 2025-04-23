@@ -1,4 +1,4 @@
-from app import app
+from app import create_app
 
 """
 Файл для запуска в dev режиме, в production
@@ -6,4 +6,5 @@ from app import app
 """
 
 if __name__ == "__main__":
+    app = create_app()
     app.run()
