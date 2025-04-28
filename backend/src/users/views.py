@@ -4,6 +4,7 @@ from flask_jwt_extended import (create_access_token,
 from flask import Blueprint
 
 from core.pydantic_validation import pydantic_validation
+from core.swagger_docs import swagger_docs
 from users.schemas import UserSchemaLogin, TokenSchema
 from users.services import UserService
 
@@ -20,6 +21,7 @@ def signup(user_creds: UserSchemaLogin):
 
 
 @users_bp.route("/login", methods=["POST"])
+@swagger_docs(description="Login user", responses=[{200: TokenSchema}])
 @pydantic_validation
 def login(user_creds: UserSchemaLogin):
     user = UserService.get_by_pass_username(user_creds.password,

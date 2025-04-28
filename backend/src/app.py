@@ -5,6 +5,7 @@ from os import getenv
 from extensions import db, migrate, jwt
 
 from users.views import users_bp
+# from core.openapi import generate_openapi_spec
 
 load_dotenv()
 
@@ -29,7 +30,8 @@ def create_app():
     set_config(app)
     register_blueprints(app)
     register_extensions(app)
-
+   # openapi = generate_openapi_spec(app, title="API", version="1.0.0")
+    # print(openapi.model_dump_json(by_alias=True, exclude_none=True, indent=2))
     return app
 
 
