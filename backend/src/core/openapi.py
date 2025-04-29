@@ -1,12 +1,21 @@
-from typing import Dict, Optional, Type
+from typing import Type, Dict, Optional
+import re
 
 from flask import Flask
-from openapi_pydantic.v3.v3_0 import Info, PathItem, Operation, Response, \
-    Schema, Components, RequestBody, SecurityScheme, SecurityRequirement
-from werkzeug.routing import parse_converter_args
+from openapi_pydantic.v3.v3_0 import (
+    Info,
+    PathItem,
+    Operation,
+    Response,
+    Schema,
+    Components,
+    RequestBody
+)
 from openapi_pydantic.v3.v3_0 import OpenAPI
-from openapi_pydantic.v3.v3_0.util import PydanticSchema, construct_open_api_with_schema_class
-from pydantic import BaseModel
+from openapi_pydantic.v3.v3_0.util import (
+    PydanticSchema,
+    construct_open_api_with_schema_class
+)
 from typing_extensions import List
 
 from core.swagger_docs import SwaggerDocsExtension
@@ -16,7 +25,6 @@ from logging import getLogger
 logger = getLogger(__name__)
 
 from dataclasses import dataclass
-
 from pydantic import BaseModel
 
 
@@ -27,7 +35,7 @@ class SwaggerDocsExtension:
     request_body: Optional[Type[BaseModel]] = None
 
 
-def generate_openapi_spec(app: Flask, title: str = "API",
+def generate_openapi_spec(app: Flask, title: str = "TeamSync API",
                           version: str = "1.0.0") -> OpenAPI:
     """
     Генерирует OpenAPI спецификацию на основе правил URL Flask и SwaggerDocsExtension.
@@ -123,13 +131,18 @@ def _add_model_to_schemas(
     return {"$ref": f"#/components/schemas/{model_name}"}
 
 
-def _extract_flask_route_params(route):
-    """Извлекает параметры из URL-шаблона Flask."""
-    rules = []
+def _extract_flask_route_params(url):
+    pattern = re.compile(r'<(?:(?P<type>\w+):)?(?P<name>\w+)>')
+    args = {}
 
-    pass
+    for match in pattern.finditer(url):
+        arg_type = match.group(
+            "type") or "str"
+        arg_name = match.group("name")
+        args[arg_name] = arg_type
 
-    return rules
+    return args
+
 
 def register_openapi_spec_endpoint(app):
     """
@@ -137,4 +150,5 @@ def register_openapi_spec_endpoint(app):
     """
     @app.route('/apispec_1.json')
     def get_spec():
+
         return generate_openapi_spec(app, "api").model_dump_json(by_alias=True, exclude_none=True, indent=2)
