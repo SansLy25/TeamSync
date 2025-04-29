@@ -1,7 +1,7 @@
 from typing import Type, Dict, Optional
 import re
 
-from flask import Flask, request
+from flask import Flask
 from openapi_pydantic.v3.v3_0 import (
     Info,
     PathItem,
@@ -10,10 +10,10 @@ from openapi_pydantic.v3.v3_0 import (
     Schema,
     Components,
     RequestBody,
-    Parameter
+    Parameter,
+    OpenAPI,
+    SecurityRequirement
 )
-
-from openapi_pydantic.v3.v3_0 import OpenAPI
 from openapi_pydantic.v3.v3_0.util import (
     PydanticSchema,
     construct_open_api_with_schema_class
@@ -38,7 +38,7 @@ class SwaggerDocsExtension:
 
 
 def generate_openapi_spec(app: Flask, title: str = "TeamSync API",
-                          version: str = "1.0.0") -> OpenAPI:
+                          version: str = "1.0.0", auth_type: str = "jwt") -> OpenAPI:
     """
     Генерирует OpenAPI спецификацию на основе правил URL Flask и SwaggerDocsExtension.
     """
@@ -68,7 +68,7 @@ def generate_openapi_spec(app: Flask, title: str = "TeamSync API",
                 description=swagger_docs.description,
                 responses=_create_responses(swagger_docs.responses,
                                             components_schemas),
-                parameters=_get_path_params_obj_list(path_params)
+                parameters=_get_path_params_obj_list(path_params) + _get_query_params_obj_list(swagger_docs.query_params)
             )
 
             if swagger_docs.request_body:
@@ -83,7 +83,7 @@ def generate_openapi_spec(app: Flask, title: str = "TeamSync API",
         info=Info(title=title, version=version),
         paths=paths,
         components=Components(
-            schemas=components_schemas) if components_schemas else None
+            schemas=components_schemas) if components_schemas else None,
     )
 
     return construct_open_api_with_schema_class(open_api)
@@ -160,6 +160,16 @@ def _get_path_params_obj_list(params):
         params_obj_list.append(Parameter(name=param, param_in="path", required=True))
 
     return params_obj_list
+
+
+def _get_query_params_obj_list(params):
+    params_obj_list = []
+    for param in params:
+        params_obj_list.append(
+            Parameter(name=param, param_in="query", required=True))
+
+    return params_obj_list
+
 
 def register_openapi_spec_endpoint(app):
     """
