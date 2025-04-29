@@ -1,21 +1,13 @@
 import json
 from functools import wraps
-from typing import get_type_hints
+
 from pydantic import BaseModel, ValidationError
 from flask import request, Response
 from werkzeug.exceptions import BadRequest
 
+from core.utils import get_func_instance_arg
 
 def pydantic_validation(view):
-    def get_pydantic_scheme(args_types):
-        pydantic_scheme, arg_name = None, None
-        for arg in args_types:
-            arg_type = args_types[arg]
-            if issubclass(arg_type, BaseModel):
-                pydantic_scheme = arg_type
-                arg_name = arg
-
-        return pydantic_scheme, arg_name
 
     def validate_request_body(json_data, schema):
         try:
@@ -53,7 +45,7 @@ def pydantic_validation(view):
 
     @wraps(view)
     def wrapper(*args, **kwargs):
-        pydantic_schema, arg_name = get_pydantic_scheme(get_type_hints(view))
+        pydantic_schema, arg_name = get_func_instance_arg(view, BaseModel)
         if pydantic_schema is not None:
             try:
                 json_data = request.get_json()
@@ -66,7 +58,7 @@ def pydantic_validation(view):
 
         return get_response_object(view(*args, **kwargs))
 
-    pydantic_schema, _ = get_pydantic_scheme(get_type_hints(view))
+    pydantic_schema, _ = get_func_instance_arg(view, BaseModel)
 
     wrapper.pydantic_schema = pydantic_schema
 

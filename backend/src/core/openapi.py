@@ -11,8 +11,7 @@ from openapi_pydantic.v3.v3_0 import (
     Components,
     RequestBody,
     Parameter,
-    OpenAPI,
-    SecurityRequirement
+    OpenAPI, SecurityScheme,
 )
 from openapi_pydantic.v3.v3_0.util import (
     PydanticSchema,
@@ -38,12 +37,18 @@ class SwaggerDocsExtension:
 
 
 def generate_openapi_spec(app: Flask, title: str = "TeamSync API",
-                          version: str = "1.0.0", auth_type: str = "jwt") -> OpenAPI:
+                          version: str = "1.0.0") -> OpenAPI:
     """
-    Генерирует OpenAPI спецификацию на основе правил URL Flask и SwaggerDocsExtension.
+    Генерирует OpenAPI спецификацию с jwt на основе правил URL Flask и SwaggerDocsExtension.
     """
     paths: Dict[str, PathItem] = {}
     components_schemas: Dict[str, Schema] = {}
+    jwt_security_scheme = SecurityScheme(
+        type="http",
+        scheme="bearer",
+        bearerFormat="JWT",
+        description="JWT авторизация через Bearer token"
+    )
 
     for rule in app.url_map.iter_rules():
 
@@ -82,8 +87,10 @@ def generate_openapi_spec(app: Flask, title: str = "TeamSync API",
     open_api = OpenAPI(
         info=Info(title=title, version=version),
         paths=paths,
+        security=[{"JWT токен": []}],
         components=Components(
-            schemas=components_schemas) if components_schemas else None,
+            schemas=components_schemas,
+            securitySchemes={"JWT токен": jwt_security_scheme}) if components_schemas else None
     )
 
     return construct_open_api_with_schema_class(open_api)
@@ -99,7 +106,7 @@ def _create_responses(
         for status_code, model in response_dict.items():
             schema_ref = _add_model_to_schemas(model, components_schemas)
             result[str(status_code)] = Response(
-                description=f"Response with {model.__name__}",
+                description=f"",
                 content={
                     "application/json": {
                         "schema": schema_ref

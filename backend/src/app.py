@@ -31,7 +31,6 @@ def create_app():
     set_config(app)
     register_blueprints(app)
     register_extensions(app)
-    print(generate_openapi_spec(app))
 
     return app
 
