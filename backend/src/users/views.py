@@ -20,8 +20,8 @@ def signup(user_creds: UserSchemaLogin):
     return TokenSchema(token=access_token), 201
 
 
-@users_bp.route("/login", methods=["POST"])
-@swagger_docs(description="Login user", responses=[{200: TokenSchema}])
+@users_bp.route("/login/<int:id>", methods=["POST"])
+@swagger_docs(description="Генерирует токе для пользователя", responses=[{200: TokenSchema}])
 @pydantic_validation
 def login(user_creds: UserSchemaLogin):
     user = UserService.get_by_pass_username(user_creds.password,

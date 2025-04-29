@@ -68,7 +68,6 @@ def pydantic_validation(view):
 
     pydantic_schema, _ = get_pydantic_scheme(get_type_hints(view))
 
-    # Устанавливаем атрибут pydantic_schema для wrapper
     wrapper.pydantic_schema = pydantic_schema
 
     return wrapper
