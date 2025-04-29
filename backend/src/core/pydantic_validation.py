@@ -43,8 +43,10 @@ def pydantic_validation(view):
             json.dumps(content), status=status_code, content_type="application/json"
         )
 
+
     @wraps(view)
     def wrapper(*args, **kwargs):
+
         pydantic_schema, arg_name = get_func_instance_arg(view, BaseModel)
         if pydantic_schema is not None:
             try:
@@ -61,5 +63,5 @@ def pydantic_validation(view):
     pydantic_schema, _ = get_func_instance_arg(view, BaseModel)
 
     wrapper.pydantic_schema = pydantic_schema
-
+    print(view.__annotations__)
     return wrapper

@@ -19,3 +19,7 @@ class UserSchemaLogin(BaseModel):
 
 class TokenSchema(BaseModel):
     token: str
+
+
+class UserIdSchema(BaseModel):
+    id: int
