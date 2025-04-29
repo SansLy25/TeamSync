@@ -13,7 +13,7 @@ def pydantic_validation(view):
         try:
             return schema(**json_data)
         except ValidationError as e:
-            raise BadRequest(e)
+            raise BadRequest(e.errors())
 
     def get_response_object(view_res):
         if not isinstance(view_res, tuple):
