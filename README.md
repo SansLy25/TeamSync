@@ -24,7 +24,7 @@ Nginx) docker сам подтянет с образов. Для проверки
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 ### 2. Запуск контейнеров
-1. Перейдите в корень проекта (на один уровень с README.md) с помощью `cd`
+Перейдите в корень проекта (на один уровень с README.md) с помощью `cd`
 ```bush
 docker-compose up --build
 ```
