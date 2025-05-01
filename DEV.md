@@ -1,5 +1,3 @@
-from games.schemas import GameSchemaReadfrom games.schemas import GameSchemaReadfrom users.views import users_bp
-
 # Дополнительная информация
 
 Это расширение документации проекта которое содержит информацию для разработчиков данного проекта, а именно
