@@ -6,7 +6,9 @@ from os import getenv
 from extensions import db, migrate, jwt, swagger
 
 from users.views import users_bp
-from core.openapi import register_openapi_spec_endpoint, generate_openapi_spec
+from games.views import games_bp
+
+from core.openapi import register_openapi_spec_endpoint
 
 load_dotenv()
 
@@ -50,6 +52,7 @@ def set_config(app):
 
 def register_blueprints(app):
     app.register_blueprint(users_bp)
+    app.register_blueprint(games_bp)
 
 
 def register_extensions(app):

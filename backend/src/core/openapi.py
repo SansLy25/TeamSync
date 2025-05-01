@@ -50,8 +50,9 @@ def generate_openapi_spec(app: Flask, title: str = "TeamSync API",
         description="JWT авторизация через Bearer token"
     )
 
-    for rule in app.url_map.iter_rules():
+    processed_urls = set()
 
+    for rule in app.url_map.iter_rules():
         endpoint = app.view_functions[rule.endpoint]
         swagger_docs: Optional[SwaggerDocsExtension] = getattr(endpoint,
                                                                '_swagger_docs',
@@ -61,8 +62,6 @@ def generate_openapi_spec(app: Flask, title: str = "TeamSync API",
 
         if not swagger_docs:
             continue
-
-
 
         path_item = PathItem()
         methods = [method.lower() for method in rule.methods if
@@ -82,7 +81,20 @@ def generate_openapi_spec(app: Flask, title: str = "TeamSync API",
 
             setattr(path_item, method, operation)
 
-            paths[openapi_url] = path_item
+        if openapi_url in processed_urls:
+            existing_path_item = paths[openapi_url]
+            for method in ["get", "post", "put", "delete", "patch"]:
+                try:
+                    existing_operation = getattr(existing_path_item, method)
+                    if existing_operation:
+                        setattr(path_item, method, existing_operation)
+
+                except AttributeError as e:
+                    pass
+
+
+        paths[openapi_url] = path_item
+        processed_urls.add(openapi_url)
 
     open_api = OpenAPI(
         info=Info(title=title, version=version),

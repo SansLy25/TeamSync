@@ -1,6 +1,5 @@
 from functools import wraps
 
-from flask import request
 from werkzeug.exceptions import Unauthorized
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 

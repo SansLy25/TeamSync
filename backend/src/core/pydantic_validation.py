@@ -32,7 +32,7 @@ def pydantic_validation(view):
         elif isinstance(object_content, dict):
             content = object_content
         elif issubclass(type(object_content), BaseModel):
-            content = object_content.model_dump()
+            content = object_content.model_dump_json()
         else:
             content = {}
 
@@ -40,7 +40,7 @@ def pydantic_validation(view):
             status_code = 200
 
         return Response(
-            json.dumps(content), status=status_code, content_type="application/json"
+            content, status=status_code, content_type="application/json"
         )
 
 
@@ -63,5 +63,4 @@ def pydantic_validation(view):
     pydantic_schema, _ = get_func_instance_arg(view, BaseModel)
 
     wrapper.pydantic_schema = pydantic_schema
-    print(view.__annotations__)
     return wrapper
