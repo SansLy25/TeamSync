@@ -1,4 +1,4 @@
-from users.views import users_bp
+from games.schemas import GameSchemaReadfrom games.schemas import GameSchemaReadfrom users.views import users_bp
 
 # Дополнительная информация
 
@@ -80,6 +80,7 @@ src/
 Все, теперь можно создавать эндпоинты с помощью blueprint:
 ```python
 @users_bp.route('/<int:user_id>', methods=['GET'])
+@rest_api()
 def get_user(user_id: int):
     pass
 ```
@@ -122,3 +123,48 @@ flask db upgrade
 ```
 
 Создавать миграции нужно если вы что то изменили в моделях: удалили, изменили, добавили поле или еще одну модель, в общем все что связано с моделями, если вы просто изменили логику работы с БД в services.py или views.py то миграции создавать не нужно
+
+# Фишки
+### Схемы из атрибутов
+
+Часто возникает ситуация когда имена полей в схеме pydantic и имена атрибутов в модели SQLAlchemy совпадают (что является хорошей практикой), и в таких случаях приходится писать следующее:
+```python
+@game_bp.route('/<int:game_id>', methods=['GET'])
+@rest_api(
+   responses = [{200: GameSchema}]
+)
+def get_game(game_id: int):
+    game = Game.query.get(game_id) # возвращает объект модели SQLAlchemy
+    if not game:
+        raise NotFound('Game not found')
+    return GameSchema(id=game.id, name=game.name, description=game.description)
+```
+То есть мы просто для переносим атрибуты объекта game в схему, и если их немного то это еще выглядит нормально, но если много это уже выглядит не очень, и в таких случаях можно использовать метод `model_validate` у класса pydantic схемы, который позволяет создавать объект схемы из объекта модели SQLAlchemy на основе атрибутов, то есть можно сделать так:
+```python
+@game_bp.route('/<int:game_id>', methods=['GET'])
+@rest_api(
+   responses = [{200: GameSchema}]
+)
+def get_game(game_id: int):
+    game = Game.query.get(game_id) # возвращает объект модели SQLAlchemy
+    if not game:
+        raise NotFound('Game not found')
+    return GameSchema.model_validate(game, from_attributes=True)
+```
+Важно указать `from_attributes=True`, и чтобы имена атрибутов совпадали с именами полей в схеме
+
+### Обратная ситуация
+Может быть тоже самое только наоборот: нужно создать объект модели SQLAlchemy из схемы pydantic с совпадающими именами атрибутов, в этом случаем можно сделать так:
+
+```python
+class GameService:
+   
+    @staticmethod
+    def create(obj: GameSchema):
+        game = Game(**obj.model_dump())
+        db.session.add(game)
+        db.session.commit()
+        return game
+```
+
+`model_dump()` возвращает словарь с атрибутами схемы, и мы просто распаковываем его в объект модели SQLAlchemy как kwargs, и все работает
