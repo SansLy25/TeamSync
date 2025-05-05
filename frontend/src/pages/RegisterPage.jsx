@@ -191,7 +191,7 @@ function RegisterPage() {
                 <option value="female">Женский</option>
                 <option value="prefer-not-to-say">Предпочитаю не указывать</option>
               </select>
-              {errors.gender && <p className="text-error-400 text-sm mt-1">{errors.gender}</p>}
+              {errors.gender && <p className="text-error-400 text-sm mt-1 kl-21 marg-23">{errors.gender}</p>}
             </div>
 
             <div>
