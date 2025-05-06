@@ -194,7 +194,7 @@ def register_openapi_spec_endpoint(app):
     """
     Эндпоинт генерации swagger документации
     """
-    @app.route('/apispec_1.json')
+    @app.route('/api/docs/api_spec.json')
     def get_spec():
 
         return generate_openapi_spec(app, "api").model_dump_json(by_alias=True,

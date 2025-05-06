@@ -2,7 +2,6 @@ from flask import Flask
 from dotenv import load_dotenv
 from os import getenv
 
-
 from extensions import db, migrate, jwt, swagger
 
 from users.views import users_bp
@@ -11,7 +10,6 @@ from games.views import games_bp
 from core.openapi import register_openapi_spec_endpoint
 
 load_dotenv()
-
 
 CONFIG = {
     # Дополнительные параметры конфигурации добавлять в этот словарь
@@ -25,6 +23,21 @@ CONFIG = {
     },
     "DEBUG": getenv("DEBUG", "True").lower() == "true",
     "SECRET_KEY": getenv("SECRET_KEY", "50jhfhK6BXmcSTsADWXdy3jXiVmO6D6n"),
+    "SWAGGER": {
+        "swagger_ui_bundle_js": "//unpkg.com/swagger-ui-dist@3/swagger-ui-bundle.js",
+        "swagger_ui_standalone_preset_js": "//unpkg.com/swagger-ui-dist@3/swagger-ui-standalone-preset.js",
+        "jquery_js": "//unpkg.com/jquery@2.2.4/dist/jquery.min.js",
+        "swagger_ui_css": "//unpkg.com/swagger-ui-dist@3/swagger-ui.css",
+        "specs_route": "/api/docs/",
+        "specs": [
+            {
+                "endpoint": "api_spec",
+                "route": "/api/docs/api_spec.json",
+                "rule_filter": lambda rule: True,
+                "model_filter": lambda tag: True,
+            }
+        ],
+    }
 }
 
 
