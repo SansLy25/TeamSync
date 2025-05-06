@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  
+  body {
+    @apply bg-dark-800 text-gray-100 font-sans;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-all duration-200 flex items-center justify-center gap-2;
+  }
+  
+  .btn-primary {
+    @apply bg-primary-600 hover:bg-primary-700 text-white shadow-md;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary-600 hover:bg-secondary-700 text-white shadow-md;
+  }
+  
+  .btn-accent {
+    @apply bg-accent-500 hover:bg-accent-600 text-white shadow-md;
+  }
+  
+  .btn-outline {
+    @apply border-2 border-primary-500 text-primary-500 hover:bg-primary-500 hover:text-white;
+  }
+  
+  .btn-ghost {
+    @apply text-gray-300 hover:text-white hover:bg-gray-800;
+  }
+  
+  .card {
+    @apply bg-dark-700 rounded-lg shadow-md overflow-hidden border border-dark-600 hover:border-primary-700 transition-all duration-300;
+  }
+  
+  .input {
+    @apply w-full px-4 py-2 bg-dark-600 border border-dark-500 focus:border-primary-500 rounded-md text-white outline-none transition-all;
+  }
+  
+  .label {
+    @apply block text-sm font-medium text-gray-300 mb-1;
+  }
+  
+  .select {
+    @apply w-full px-4 py-2 bg-dark-600 border border-dark-500 focus:border-primary-500 rounded-md text-white outline-none transition-all;
+  }
+  
+  .checkbox {
+    @apply h-5 w-5 rounded border-2 border-gray-400 text-primary-600 focus:ring-primary-500 focus:ring-2 bg-dark-800;
+  }
+  
+  .badge {
+    @apply px-2 py-1 text-xs font-medium rounded-full;
+  }
+  
+  .badge-primary {
+    @apply bg-primary-500 text-white;
+  }
+  
+  .badge-secondary {
+    @apply bg-secondary-500 text-white;
+  }
+  
+  .badge-accent {
+    @apply bg-accent-500 text-white;
+  }
+  
+  .badge-success {
+    @apply bg-success-500 text-white;
+  }
+  
+  .badge-warning {
+    @apply bg-warning-500 text-white;
+  }
+  
+  .badge-error {
+    @apply bg-error-500 text-white;
+  }
+}
+
+@layer utilities {
+  .animate-in {
+    @apply transition-all transform duration-300 ease-out;
+  }
+  
+  .slide-in-bottom {
+    @apply opacity-0 translate-y-5;
+  }
+  
+  .slide-in-bottom.active {
+    @apply opacity-100 translate-y-0;
+  }
+  
+  .slide-in-left {
+    @apply opacity-0 -translate-x-5;
+  }
+  
+  .slide-in-left.active {
+    @apply opacity-100 translate-x-0;
+  }
+  
+  .slide-in-right {
+    @apply opacity-0 translate-x-5;
+  }
+  
+  .slide-in-right.active {
+    @apply opacity-100 translate-x-0;
+  }
+}
