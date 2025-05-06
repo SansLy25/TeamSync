@@ -7,13 +7,26 @@ from werkzeug.exceptions import BadRequest
 
 from core.utils import get_func_instance_arg
 
+
 def pydantic_validation(view):
+    def default_serializer(obj):
+        if isinstance(obj, (ValueError, Exception)):
+            return str(obj)  # Преобразуем исключение в строку
+        raise TypeError(
+            f"Object of type {type(obj).__name__} is not JSON serializable")
 
     def validate_request_body(json_data, schema):
         try:
             return schema(**json_data)
         except ValidationError as e:
-            raise BadRequest(e.errors())
+            raise BadRequest(
+                json.loads(
+                    json.dumps(
+                        e.errors(),
+                        default=default_serializer
+                    )
+                )
+            )
 
     def get_response_object(view_res):
         if not isinstance(view_res, tuple):
@@ -42,7 +55,6 @@ def pydantic_validation(view):
         return Response(
             content, status=status_code, content_type="application/json"
         )
-
 
     @wraps(view)
     def wrapper(*args, **kwargs):

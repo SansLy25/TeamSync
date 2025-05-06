@@ -16,7 +16,6 @@ def exception_catcher(func):
                 "status": e.code
             }
             if e.description is not None:
-                print(type(e))
                 response_kwargs["response"] = json.dumps({"detail": e.description})
 
             return Response(**response_kwargs)
