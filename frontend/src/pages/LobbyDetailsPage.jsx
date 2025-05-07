@@ -58,7 +58,7 @@ function LobbyDetailsPage() {
       const playerData = await Promise.all(playerDataPromises);
       setPlayers(playerData);
     } catch (err) {
-      setError('Не удалось загрузить информацию о лобби. Возможно, оно больше не существует.');
+      setError('Не удалось загрузить информацию о лобби');
       console.error(err);
     } finally {
       setIsLoading(false);
@@ -80,7 +80,7 @@ function LobbyDetailsPage() {
       // Добавляем текущего пользователя в список игроков
       setPlayers(prev => [...prev, currentUser]);
     } catch (err) {
-      setError(err.message || 'Не удалось присоединиться к лобби. Пожалуйста, попробуйте снова.');
+      setError(err.message || 'Не удалось присоединиться к лобби');
     } finally {
       setIsJoining(false);
     }
@@ -103,7 +103,7 @@ function LobbyDetailsPage() {
       // Удаляем текущего пользователя из списка игроков
       setPlayers(prev => prev.filter(player => player.id !== currentUser.id));
     } catch (err) {
-      setError(err.message || 'Не удалось покинуть лобби. Пожалуйста, попробуйте снова.');
+      setError(err.message || 'Не удалось покинуть лобби');
     } finally {
       setIsLeaving(false);
     }
