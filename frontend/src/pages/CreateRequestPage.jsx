@@ -127,7 +127,7 @@ function CreateRequestPage() {
           
           {showOtherGame && (
             <div>
-              <label htmlFor="otherGame" className="label">Specify Game</label>
+              <label htmlFor="otherGame" className="label">Укажите игру</label>
               <input
                 type="text"
                 id="otherGame"

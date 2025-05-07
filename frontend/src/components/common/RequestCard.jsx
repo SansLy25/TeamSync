@@ -24,10 +24,6 @@ function RequestCard({ request }) {
             <User className="h-4 w-4 mr-1" />
             <span>Player #{creator}</span>
           </div>
-          <div className="flex items-center">
-            <Calendar className="h-4 w-4 mr-1" />
-            <span>{formattedDate}</span>
-          </div>
         </div>
         
         {/* Активные кнопки */}
