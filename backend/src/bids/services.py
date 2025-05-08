@@ -19,8 +19,8 @@ class BidService:
         return db.session.query(Bid).all()
 
     @staticmethod
-    def create(obj: BidSchemaWrite) -> BidSchemaRead:
-        bid = Bid(**obj.model_dump())
+    def create(obj: BidSchemaWrite, user) -> BidSchemaRead:
+        bid = Bid(author=user, **obj.model_dump())
         db.session.add(bid)
         db.session.commit()
         return bid

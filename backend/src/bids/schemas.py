@@ -7,9 +7,8 @@ from typing import Optional, List
 
 class BidSchemaWrite(BaseModel):
     game_id: int
-    author_id: int
-    description: str = Field(max_length=500, min_length=20)
-    details: Optional[str] = Field(max_length=500)
+    description: str = Field(min_length=20)
+    details: Optional[str] = Field()
 
 
 

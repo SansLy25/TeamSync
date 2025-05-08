@@ -22,8 +22,8 @@ def get_games_list():
     description="Создание заявки",
     responses=[{201: BidSchemaWrite}]
 )
-def create_bid(bid_obj: BidSchemaWrite):
-    bid = BidService.create(bid_obj)
+def create_bid(bid_obj: BidSchemaWrite, user: User):
+    bid = BidService.create(bid_obj, user)
     return BidSchemaRead.model_validate(bid), 201
 
 
