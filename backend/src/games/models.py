@@ -19,3 +19,4 @@ class Game(db.Model):
     genre_id = db.Column(db.Integer, db.ForeignKey("game_genres.id"))
     release_date = db.Column(db.Date, nullable=False)
     url_image = db.Column(db.String, nullable=True)
+    bids = db.relationship("Bid", back_populates="game")
