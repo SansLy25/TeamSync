@@ -185,7 +185,7 @@ def _get_query_params_obj_list(params):
     params_obj_list = []
     for param in params:
         params_obj_list.append(
-            Parameter(name=param, param_in="query", required=True))
+            Parameter(name=param, param_in="query", required=False))
 
     return params_obj_list
 

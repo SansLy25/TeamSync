@@ -1,10 +1,9 @@
 from flask import Blueprint, request
 from core.rest_api_extension import rest_api
-from ..users.models import User
-from models import Bid
-from schemas import BidSchemaWrite, BidSchemaRead, BidListSchema
-from services import BidService
-from app import app, db
+from users.models import User
+from bids.models import Bid
+from bids.schemas import BidSchemaWrite, BidSchemaRead, BidListSchema
+from bids.services import BidService
 
 bids_bp = Blueprint('bids', __name__, url_prefix='/api/bids')
 
@@ -25,25 +24,27 @@ def get_games_list():
 )
 def create_bid(bid_obj: BidSchemaWrite):
     bid = BidService.create(bid_obj)
-    return BidSchemaRead.model_validate(bid)
+    return BidSchemaRead.model_validate(bid), 201
 
 
-@bids_bp.route("", methods=["GET"])
+@bids_bp.route("/loa", methods=["GET"])
 @rest_api(
     description="Получение списка игр",
     responses=[{200: BidListSchema}],
+    query_params=["game_search", "description_search"]
 )
 def get_bids_list():
     desc_search = request.args.get('description_search')
     game_search = request.args.get('game_search')
     bids = BidService.get_all(desc=desc_search, gameid=game_search)
-    return BidListSchema(games=[BidSchemaRead.model_validate(bid, from_attributes=True) for bid in bids])
+    return BidListSchema(bids=[BidSchemaRead.model_validate(bid, from_attributes=True) for bid in bids])
+
 
 @bids_bp.route("/<int:bid_id>", methods=["GET"])
 @rest_api(
-    description="Получение списка игр по айди",
-    responses=[{200: BidListSchema}],
+    description="Получение заявки по id",
+    responses=[{200: BidSchemaRead}],
 )
-def get_bids_list(bid_id: int):
-    bids = BidService.get_by_id(bid_id)
-    return BidListSchema(games=[BidSchemaRead.model_validate(bid, from_attributes=True) for bid in bids])
+def get_bid(bid_id: int):
+    bid = BidService.get_by_id(bid_id)
+    return BidSchemaRead.model_validate(bid, from_attributes=True)

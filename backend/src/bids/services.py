@@ -1,6 +1,6 @@
 from app import db
-from models import Bid
-from schemas import BidSchemaWrite, BidSchemaRead
+from bids.models import Bid
+from bids.schemas import BidSchemaWrite, BidSchemaRead
 
 
 class BidService:

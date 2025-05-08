@@ -1,5 +1,3 @@
-
-
 from app import db
 
 class Bid(db.Model):

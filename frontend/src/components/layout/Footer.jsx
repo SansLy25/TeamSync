@@ -32,7 +32,7 @@ function Footer() {
                 </div>
 
                 <div className="border-t border-dark-700 mt-8 pt-6 text-center text-gray-500 text-sm">
-                    <p>&copy; {currentYear} TeamSync. Все права защищены.</p>
+                    <p>&copy; {currentYear} TeamSync. Все права защищены .</p>
                 </div>
             </div>
         </footer>
