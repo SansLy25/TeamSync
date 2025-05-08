@@ -1,3 +1,4 @@
+from http.client import responses
 
 from flask_jwt_extended import (create_access_token)
 from flask import Blueprint
@@ -5,7 +6,8 @@ from werkzeug.exceptions import Unauthorized
 
 from core.rest_api_extension import rest_api
 from users.models import User
-from users.schemas import UserSchemaLogin, TokenSchema, UserIdSchema
+from users.schemas import UserSchemaLogin, TokenSchema, \
+    UserSchemaSignUp, UserReadSchema
 from users.services import UserService
 
 users_bp = Blueprint('users', __name__, url_prefix='/api/users')
@@ -16,8 +18,8 @@ users_bp = Blueprint('users', __name__, url_prefix='/api/users')
     description="Регистрирует пользователя и возвращает токен",
     responses=[{201: TokenSchema}]
 )
-def signup(user_creds: UserSchemaLogin):
-    user = UserService.create(user_creds.password, user_creds.username)
+def signup(user_creds: UserSchemaSignUp):
+    user = UserService.create(user_creds)
     access_token = create_access_token(identity=str(user.id))
     return TokenSchema(token=access_token), 201
 
@@ -38,6 +40,7 @@ def login(user_creds: UserSchemaLogin):
 
 
 @users_bp.route("/protected", methods=["POST"])
-@rest_api(description="Эндпоинт требующий токен в заголовке")
+@rest_api(description="Эндпоинт требующий токен в заголовке",
+          responses=[{200: UserReadSchema}])
 def protected_endpoint(user: User):
-    return UserIdSchema(id=user.id), 200
+    return UserReadSchema.model_validate(user, from_attributes=True), 200

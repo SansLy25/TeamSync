@@ -12,14 +12,16 @@ class UserService:
         return user
 
     @staticmethod
-    def create(password, username):
+    def create(user_creds):
         try:
-            hashed_pass = generate_password_hash(password, method="pbkdf2:sha256")
-            user = User(password=hashed_pass, username=username)
+            hashed_pass = generate_password_hash(user_creds.password, method="pbkdf2:sha256")
+            delattr(user_creds, "password")
+            user = User(password=hashed_pass, **user_creds.model_dump(mode="json"))
             db.session.add(user)
             db.session.commit()
-        except IntegrityError:
-            raise Conflict("User with this email already exists")
+        except IntegrityError as e:
+            print(e)
+            raise Conflict("User with this username already exists")
         return user
 
     @staticmethod

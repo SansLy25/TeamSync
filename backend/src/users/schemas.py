@@ -1,6 +1,17 @@
 import re
+from typing import Optional
 
-from pydantic import BaseModel, constr, field_validator
+from pydantic import BaseModel, constr, field_validator, HttpUrl
+
+
+class UserBaseSchema(BaseModel):
+    username: str
+    avatar: HttpUrl
+    gender: str = "male"
+    telegram_contact: constr(max_length=50)
+    discord_contact: constr(max_length=50)
+    steam_contact: constr(max_length=50)
+    bio: Optional[str] = None
 
 
 class UserSchemaLogin(BaseModel):
@@ -16,10 +27,13 @@ class UserSchemaLogin(BaseModel):
         raise ValueError("The password does not "
                          "meet security standards.")
 
-class UserSchema(BaseModel):
+
+class UserSchemaSignUp(UserBaseSchema, UserSchemaLogin):
+    pass
+
+
+class UserReadSchema(UserBaseSchema):
     id: int
-    username: str
-    
 
 
 class TokenSchema(BaseModel):
