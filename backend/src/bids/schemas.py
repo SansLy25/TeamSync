@@ -3,6 +3,8 @@ import re
 from pydantic import BaseModel, constr, field_validator, ConfigDict
 from pydantic.fields import Field
 from typing import Optional, List
+from games.schemas import GameSchemaRead
+from users.schemas import UserSchema
 
 
 class BidSchemaWrite(BaseModel):
@@ -20,6 +22,8 @@ class BidSchemaWrite(BaseModel):
 
 class BidSchemaRead(BidSchemaWrite):
     id: int
+    game: GameSchemaRead
+    author: UserSchema
     model_config = ConfigDict(from_attributes=True)
 
 class BidListSchema(BaseModel):

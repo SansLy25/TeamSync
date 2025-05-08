@@ -16,6 +16,11 @@ class UserSchemaLogin(BaseModel):
         raise ValueError("The password does not "
                          "meet security standards.")
 
+class UserSchema(BaseModel):
+    id: int
+    username: str
+    
+
 
 class TokenSchema(BaseModel):
     token: str
