@@ -128,10 +128,6 @@ function RequestDetailsPage() {
                 <p className="text-sm text-gray-400">Создатель запроса</p>
               </div>
 
-              <div className="ml-auto flex items-center text-sm text-gray-400">
-                <Calendar className="h-4 w-4 mr-1" />
-                <span>{formattedDate}</span>
-              </div>
             </div>
 
             {/* Описание запроса */}

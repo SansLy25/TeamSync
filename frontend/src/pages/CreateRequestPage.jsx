@@ -95,7 +95,7 @@ function CreateRequestPage() {
 
   return (
     <div className="max-w-3xl mx-auto bg-dark-700 rounded-lg shadow-lg p-6 md:p-8 animate-fade-in">
-      <h1 className="text-2xl font-bold mb-6 text-center">Create a Teammate Request</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center">Создание заявки</h1>
       
       {errors.form && (
         <div className="bg-error-900 text-error-200 p-3 rounded-md mb-4">
@@ -151,7 +151,7 @@ function CreateRequestPage() {
                 onChange={handleChange}
                 rows="4"
                 className={`input pl-10 ${errors.description ? 'border-error-500' : ''}`}
-                placeholder="Describe what kind of teammate you're looking for, your play style, goals, etc."
+                placeholder="Опишите, какого товарища по команде вы ищете, ваш стиль игры, цели и т. д."
               ></textarea>
               <FileText className="absolute left-3 top-4 h-5 w-5 text-gray-400" />
             </div>
@@ -160,7 +160,7 @@ function CreateRequestPage() {
           </div>
           
           <div>
-            <label htmlFor="preferences" className="label">Настройки (необязательно)</label>
+            <label htmlFor="preferences" className="label">Детали (необязательно)</label>
             <textarea
               id="preferences"
               name="preferences"
@@ -168,8 +168,7 @@ function CreateRequestPage() {
               onChange={handleChange}
               rows="3"
               className="input"
-              placeholder="Конкретные предпочтения для членов команды (например,
-               необходимый микрофон, возрастной диапазон, уровень навыков и т. д.)"
+              placeholder="Конкретные предпочтения для членов команды (например необходимый микрофон, возрастной диапазон, уровень навыков и т. д.)"
             ></textarea>
           </div>
         </div>
