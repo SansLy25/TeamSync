@@ -47,4 +47,6 @@ def get_bids_list():
 )
 def get_bid(bid_id: int):
     bid = BidService.get_by_id(bid_id)
-    return BidSchemaRead.model_validate(bid, from_attributes=True)
+    if bid:
+        return BidSchemaRead.model_validate(bid, from_attributes=True)
+    return 404
