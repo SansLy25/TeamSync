@@ -28,7 +28,7 @@ def create_bid(bid_obj: BidSchemaWrite, user: User):
     return BidSchemaRead.model_validate(bid), 201
 
 
-@bids_bp.route("/loa", methods=["GET"])
+@bids_bp.route("/", methods=["GET"])
 @rest_api(
     description="Получение списка игр",
     responses=[{200: BidListSchema}],
