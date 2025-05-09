@@ -1,4 +1,3 @@
-from flask import session
 from werkzeug.exceptions import NotFound
 
 from app import db
@@ -23,13 +22,20 @@ class LobbyService:
             search_game=None
     ):
         query = db.session.query(User).join(Game)
+
         if min_skill:
-            query
+            query = query.filter(Lobby.skill_level >= min_skill)
+        if max_skill:
+            query = query.filter(Lobby.skill_level <= max_skill)
+
+        if search_game:
+            query = query.filter(Game.name.like(f'%{search_game}%'))
+        if open_slots:
+            query = query.filter(Lobby.filled_slots < Lobby.slots)
         if platform:
-            pass
+            query = query.filter(Lobby.platform == platform)
 
-
-        return db.session.query(Lobby).all()
+        return query.all()
 
     @staticmethod
     def create(user: User, lobby_obj: LobbyWriteSchema):
@@ -73,6 +79,8 @@ class LobbyService:
         if user in lobby.members:
             lobby.members.remove(User)
             lobby.filled_slots -= 1
+        if user == lobby.author:
+            db.session.delete(lobby)
 
         db.session.commit()
         return lobby

@@ -28,3 +28,14 @@ class LobbyReadSchema(LobbyBaseSchema):
 
 class LobbyWriteSchema(LobbyBaseSchema):
     game_id: int
+
+
+class LobbyListSchema(BaseModel):
+    lobbies: LobbyReadSchema
+
+    class Config:
+        from_attributes = True
+
+
+class NonResponseSchema(BaseModel):
+    pass
