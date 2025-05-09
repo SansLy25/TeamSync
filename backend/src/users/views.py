@@ -2,12 +2,13 @@ from http.client import responses
 
 from flask_jwt_extended import (create_access_token)
 from flask import Blueprint
-from werkzeug.exceptions import Unauthorized
+from werkzeug.exceptions import Unauthorized, NotFound
 
 from core.rest_api_extension import rest_api
 from users.models import User
 from users.schemas import UserSchemaLogin, TokenSchema, \
-    UserSchemaSignUp, UserReadSchema
+    UserSchemaSignUp, UserReadSchema, UsersListSchema, UsersListSchema, \
+    UserNotFoundSchema
 from users.services import UserService
 
 users_bp = Blueprint('users', __name__, url_prefix='/api/users')
@@ -47,3 +48,36 @@ def login(user_creds: UserSchemaLogin):
           responses=[{200: UserReadSchema}])
 def protected_endpoint(user: User):
     return UserReadSchema.model_validate(user, from_attributes=True), 200
+
+
+@users_bp.route("/<int:id>", methods=["GET"])
+@rest_api(
+    description="Получение пользователя по id",
+    responses=[{200: UserReadSchema}, {404: UserNotFoundSchema}]
+)
+def get_user(id: int):
+    user = UserService.get(id)
+    if user is None:
+        raise NotFound("User not found")
+
+
+@users_bp.route("/", methods=["GET"])
+@rest_api(
+    description="Получение всех пользователей", responses=[{200: UsersListSchema}]
+)
+def get_users_list():
+    users = UserService.get_all()
+    return UsersListSchema(
+        users=[UserReadSchema.model_validate(user, from_attributes=True) for
+               user in users])
+
+
+@users_bp.route("/profile", methods=["GET"])
+@rest_api(
+    description="Получение текущего авторизованного пользователя (из токена)",
+    responses=[{200: UserReadSchema}]
+)
+def get_profile_user(authed_user: User):
+    user = UserService.get(authed_user.id)
+
+    return UserReadSchema.model_validate(user, from_attributes=True)

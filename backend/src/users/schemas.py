@@ -36,9 +36,17 @@ class UserReadSchema(UserBaseSchema):
     id: int
 
 
+class UsersListSchema(BaseModel):
+    users: list[UserReadSchema]
+
+
 class TokenSchema(UserReadSchema):
     token: str
 
 
 class UserIdSchema(BaseModel):
     id: int
+
+
+class UserNotFoundSchema(BaseModel):
+    detail: str = "User not found"

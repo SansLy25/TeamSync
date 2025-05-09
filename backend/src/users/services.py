@@ -7,6 +7,11 @@ from users.models import User
 
 class UserService:
     @staticmethod
+    def get_all():
+        users = db.session.query(User).all()
+        return users
+
+    @staticmethod
     def get(id):
         user = db.session.query(User).get(id)
         return user

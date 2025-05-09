@@ -47,18 +47,25 @@ let users = [
 ];
 
 // Авторизация
-export const getUserByCredentials = (username, password) => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            const user = users.find(u => u.username === username && u.password === password);
-            if (user) {
-                const {password, ...userWithoutPassword} = user;
-                resolve(userWithoutPassword);
-            } else {
-                reject(new Error('Невалидный username или пароль'));
+export const getUserByCredentials = async (username, password) => {
+    try {
+        return await apiClient.post('/api/users/login',
+            {
+                password: password, username: username
             }
-        }, 500);
-    });
+        )
+    } catch (error) {
+        if (error.response) {
+
+            if (error.response.status === 401 || error.response.status === 400) {
+                throw {
+                    message: "Неверный пароль или имя пользователя"
+                }
+            }
+        }
+        throw error;
+    }
+
 };
 
 
@@ -71,7 +78,8 @@ export function convertToApiUserData(userData) {
         telegram_contact: userData?.contacts?.telegram,
         discord_contact: userData?.contacts?.discord,
         steam_contact: userData?.contacts?.steam,
-        bio: userData?.bio
+        bio: userData?.bio,
+        id: userData?.id
     };
 }
 
@@ -86,30 +94,29 @@ export function convertToUserData(apiUserData) {
             discord: apiUserData?.discord_contact,
             steam: apiUserData?.steam_contact
         },
-        bio: apiUserData?.bio
+        bio: apiUserData?.bio,
+        id: apiUserData?.id
     };
 }
 
-export const registerUser = async (userData) => {
-
-    const emptyStringToNull = (obj) => {
-        for (let key in obj) {
-            if (obj[key] === '') {
-                obj[key] = null;
-            } else if (typeof obj[key] === 'object' && obj[key] !== null) {
-                emptyStringToNull(obj[key]);
-            }
+const emptyStringToNull = (obj) => {
+    for (let key in obj) {
+        if (obj[key] === '') {
+            obj[key] = null;
+        } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+            emptyStringToNull(obj[key]);
         }
-        return obj;
-    };
+    }
+    return obj;
+};
 
+export const registerUser = async (userData) => {
     userData = emptyStringToNull(userData);
 
     let apiUserData = convertToApiUserData(userData)
 
     try {
-        const response = await apiClient.post('/api/users/signup', apiUserData);
-        return response
+        return await apiClient.post('/api/users/signup', apiUserData)
     } catch (error) {
         if (error.response) {
 
@@ -146,24 +153,9 @@ export const getUserById = (userId) => {
 };
 
 // Обновление профиля
-export const updateUserProfile = (userId, updatedData) => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            const userIndex = users.findIndex(u => u.id === userId);
-            if (userIndex !== -1) {
-                users[userIndex] = {
-                    ...users[userIndex],
-                    ...updatedData
-                };
+// export const updateUserProfile = (userId, updatedData) => {
+// };
 
-                const {password, ...userWithoutPassword} = users[userIndex];
-                resolve(userWithoutPassword);
-            } else {
-                reject(new Error('Пользователь не найден'));
-            }
-        }, 500);
-    });
-};
 
 // Присоединения к лобби
 export const joinLobby = (userId, lobbyId) => {

@@ -22,13 +22,13 @@ export function AuthProvider({children}) {
 
     const login = async (username, password) => {
         try {
-            const user = await getUserByCredentials(username, password);
+            const user = convertToUserData(await getUserByCredentials(username, password));
             if (user) {
                 setCurrentUser(user);
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 return {success: true, user};
             }
-            return {success: false, error: 'Invalid username or password'};
+            return {success: false, error: 'Неправильное имя пользователя или пароль'};
         } catch (error) {
             return {success: false, error: error.message};
         }
