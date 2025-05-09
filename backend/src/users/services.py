@@ -25,7 +25,6 @@ class UserService:
             db.session.add(user)
             db.session.commit()
         except IntegrityError as e:
-            print(e)
             raise Conflict("User with this username already exists")
         return user
 

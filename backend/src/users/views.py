@@ -5,7 +5,7 @@ from werkzeug.exceptions import Unauthorized, NotFound
 from core.rest_api_extension import rest_api
 from users.models import User
 from users.schemas import UserSchemaLogin, TokenSchema, \
-    UserSchemaSignUp, UserReadSchema, UsersListSchema, UsersListSchema, \
+    UserSchemaSignUp, UserReadSchema, UsersListSchema, \
     UserNotFoundSchema
 from users.services import UserService
 
@@ -19,7 +19,7 @@ users_bp = Blueprint('users', __name__, url_prefix='/api/users')
 )
 def signup(user_creds: UserSchemaSignUp):
     user = UserService.create(user_creds)
-    access_token = create_access_token(identity=str(user.id))
+    access_token = create_access_token(identity=str(user.id), expires_delta=False)
     user.token = access_token
     return TokenSchema.model_validate(user, from_attributes=True), 201
 
@@ -36,7 +36,7 @@ def login(user_creds: UserSchemaLogin):
     if user is None:
         raise Unauthorized("Username or password incorrect")
 
-    access_token = create_access_token(identity=user.username)
+    access_token = create_access_token(identity=str(user.id), expires_delta=False)
     user.token = access_token
     return TokenSchema.model_validate(user, from_attributes=True), 200
 
@@ -48,13 +48,13 @@ def protected_endpoint(user: User):
     return UserReadSchema.model_validate(user, from_attributes=True), 200
 
 
-@users_bp.route("/<int:id>", methods=["GET"])
+@users_bp.route("/<int:user_id>", methods=["GET"])
 @rest_api(
     description="Получение пользователя по id",
     responses=[{200: UserReadSchema}, {404: UserNotFoundSchema}]
 )
-def get_user(id: int):
-    user = UserService.get(id)
+def get_user(user_id: int):
+    user = UserService.get(user_id)
     if user is None:
         raise NotFound("User not found")
 

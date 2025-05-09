@@ -30,7 +30,7 @@ def create_bid(bid_obj: BidSchemaWrite, user: User):
 
 @bids_bp.route("/", methods=["GET"])
 @rest_api(
-    description="Получение списка игр",
+    description="Получение списка заявок",
     responses=[{200: BidListSchema}],
     query_params=["game_search", "description_search"]
 )

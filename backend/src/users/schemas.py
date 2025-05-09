@@ -13,6 +13,9 @@ class UserBaseSchema(BaseModel):
     steam_contact: Optional[constr(max_length=50)]
     bio: str
 
+    class Config:
+        from_attributes = True
+
 
 class UserSchemaLogin(BaseModel):
     password: constr(min_length=8, max_length=60)

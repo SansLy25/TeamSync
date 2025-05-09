@@ -10,12 +10,13 @@ class GameSchemaWrite(BaseModel):
     description: str = Field(max_length=500)
     release_date: date
     url_image: str | None = None
+    model_config = ConfigDict(from_attributes=True)
 
 
 class GameSchemaRead(GameSchemaWrite):
     id: int
-    model_config = ConfigDict(from_attributes=True)
 
 
 class GameListSchema(BaseModel):
     games: List[GameSchemaRead]
+    model_config = ConfigDict(from_attributes=True)

@@ -1,9 +1,12 @@
 from functools import wraps
 
+from flask_jwt_extended.exceptions import JWTExtendedException
 from werkzeug.exceptions import Unauthorized
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 
 from core.utils import get_func_instance_arg
+
+from jwt.exceptions import PyJWTError
 
 def jwt_auth(view):
     """
@@ -30,7 +33,7 @@ def jwt_auth(view):
 
             return view(*args, **kwargs)
 
-        except Exception as e:
+        except (PyJWTError, JWTExtendedException) as e:
             raise Unauthorized(str(e))
 
     return wrapper
