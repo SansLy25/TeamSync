@@ -6,12 +6,12 @@ from pydantic import BaseModel, constr, field_validator, HttpUrl
 
 class UserBaseSchema(BaseModel):
     username: str
-    avatar: HttpUrl
+    avatar: Optional[HttpUrl]
     gender: str = "male"
-    telegram_contact: constr(max_length=50)
-    discord_contact: constr(max_length=50)
-    steam_contact: constr(max_length=50)
-    bio: Optional[str] = None
+    telegram_contact: Optional[constr(max_length=50)]
+    discord_contact: Optional[constr(max_length=50)]
+    steam_contact: Optional[constr(max_length=50)]
+    bio: str
 
 
 class UserSchemaLogin(BaseModel):
@@ -36,7 +36,7 @@ class UserReadSchema(UserBaseSchema):
     id: int
 
 
-class TokenSchema(BaseModel):
+class TokenSchema(UserReadSchema):
     token: str
 
 

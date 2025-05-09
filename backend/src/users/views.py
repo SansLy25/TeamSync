@@ -15,18 +15,20 @@ users_bp = Blueprint('users', __name__, url_prefix='/api/users')
 
 @users_bp.route("/signup", methods=["POST"])
 @rest_api(
-    description="Регистрирует пользователя и возвращает токен",
+    description="Регистрирует пользователя и возвращает токен c самим пользователем",
     responses=[{201: TokenSchema}]
 )
 def signup(user_creds: UserSchemaSignUp):
     user = UserService.create(user_creds)
     access_token = create_access_token(identity=str(user.id))
-    return TokenSchema(token=access_token), 201
+    user.token = access_token
+    return TokenSchema.model_validate(user, from_attributes=True), 201
 
 
 @users_bp.route("/login", methods=["POST"])
 @rest_api(
-    description="Создает токен авторизации на основе пароля и юзернейма",
+    description="Создает токен авторизации на основе пароля "
+                "и юзернейма и возвращает его вместе с пользомателем",
     responses=[{200: TokenSchema}]
 )
 def login(user_creds: UserSchemaLogin):
@@ -36,7 +38,8 @@ def login(user_creds: UserSchemaLogin):
         raise Unauthorized("Username or password incorrect")
 
     access_token = create_access_token(identity=user.username)
-    return TokenSchema(token=access_token), 200
+    user.token = access_token
+    return TokenSchema.model_validate(user, from_attributes=True), 200
 
 
 @users_bp.route("/protected", methods=["POST"])
