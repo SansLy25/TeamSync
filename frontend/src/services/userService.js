@@ -137,24 +137,25 @@ export const registerUser = async (userData) => {
 }
 
 // Получаем по id
-export const getUserById = (userId) => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            const user = users.find(u => u.id === userId);
-            console.log({userId, user})
-            if (user) {
-                const {password, ...userWithoutPassword} = user;
-                resolve(userWithoutPassword);
-            } else {
-                reject(new Error('Пользователь не найден'));
+export const getUserById = async (userId) => {
+    try {
+        return convertToUserData(await apiClient.get(`api/users/${userId}`))
+
+    } catch (error) {
+        if (error.response) {
+            if (error.response.status === 404) {
+                throw new Error("Пользователя с таким id не существует")
             }
-        }, 300);
-    });
+        }
+
+        throw error
+    }
+
 };
 
-// Обновление профиля
-// export const updateUserProfile = (userId, updatedData) => {
-// };
+//Обновление профиля
+export const updateUserProfile = (userId, updatedData) => {
+};
 
 
 // Присоединения к лобби
