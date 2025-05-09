@@ -77,7 +77,8 @@ class LobbyService:
             return None
 
         if user in lobby.members:
-            lobby.members.remove(User)
+            lobby.members.remove(user)
+
             lobby.filled_slots -= 1
         if user == lobby.author:
             db.session.delete(lobby)
