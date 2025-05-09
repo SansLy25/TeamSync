@@ -67,6 +67,7 @@ function RegisterPage() {
 
     const validateForm = () => {
         const newErrors = {};
+        const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&,./])[\w@$!%*#?&.,/]{8,}$/;
 
         if (!formData.username.trim()) {
             newErrors.username = 'Имя пользователя обязательно';
@@ -76,15 +77,16 @@ function RegisterPage() {
 
         if (!formData.bio.trim()) {
             newErrors.bio = 'О себе обязательно';
-
         } else if (formData.bio.length < 30) {
             newErrors.bio = 'Должно быть длиннее 30 символов';
         }
 
         if (!formData.password) {
             newErrors.password = 'Пароль обязателен';
-        } else if (formData.password.length < 6) {
-            newErrors.password = 'Пароль должен быть не менее 6 символов';
+        } else if (formData.password.length < 8) {
+            newErrors.password = 'Пароль должен быть не менее 8 символов';
+        } else if (!passwordPattern.test(formData.password)) {
+            newErrors.password = 'Пароль должен содержать буквы, цифры и специальные символы (@$!%*#?&,./)';
         }
 
         if (formData.password !== formData.confirmPassword) {

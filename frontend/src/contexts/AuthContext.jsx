@@ -12,7 +12,6 @@ export function AuthProvider({children}) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Проверка есть ли пользователь в локалке
         const storedUser = localStorage.getItem('currentUser');
         if (storedUser) {
             setCurrentUser(JSON.parse(storedUser));
@@ -20,7 +19,7 @@ export function AuthProvider({children}) {
         setLoading(false);
     }, []);
 
-    // Вход
+
     const login = async (username, password) => {
         try {
             const user = await getUserByCredentials(username, password);
