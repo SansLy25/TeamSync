@@ -4,6 +4,7 @@ from users.models import User
 from bids.models import Bid
 from bids.schemas import BidSchemaWrite, BidSchemaRead, BidListSchema
 from bids.services import BidService
+from werkzeug.exceptions import NotFound
 
 bids_bp = Blueprint('bids', __name__, url_prefix='/api/bids')
 
@@ -36,7 +37,9 @@ def create_bid(bid_obj: BidSchemaWrite, user: User):
 def get_bids_list():
     desc_search = request.args.get('description_search')
     game_search = request.args.get('game_search')
-    bids = BidService.get_all(desc=desc_search, gameid=game_search)
+    bids = BidService.get_all(desc=desc_search, game_name=game_search)
+    if not bids:
+        raise NotFound("there are no such bids")
     return BidListSchema(bids=[BidSchemaRead.model_validate(bid, from_attributes=True) for bid in bids])
 
 
@@ -47,6 +50,6 @@ def get_bids_list():
 )
 def get_bid(bid_id: int):
     bid = BidService.get_by_id(bid_id)
-    if bid:
-        return BidSchemaRead.model_validate(bid, from_attributes=True)
-    return None, 404
+    if bid is None:
+        raise NotFound("Bid with such id do not exist")
+    return BidSchemaRead.model_validate(bid, from_attributes=True)
