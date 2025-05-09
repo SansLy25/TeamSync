@@ -139,7 +139,7 @@ export const registerUser = async (userData) => {
 // Получаем по id
 export const getUserById = async (userId) => {
     try {
-        return convertToUserData(await apiClient.get(`api/users/${userId}`))
+        return convertToUserData(await apiClient.get(`/api/users/${userId}`))
 
     } catch (error) {
         if (error.response) {
