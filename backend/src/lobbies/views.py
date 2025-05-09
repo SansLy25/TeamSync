@@ -112,6 +112,9 @@ def leave_lobby(user: User, lobby_id):
 )
 def delete_lobby(user: User, lobby_id: int):
     lobby = LobbyService.get(lobby_id)
+    if lobby is None:
+        raise NotFound("Lobby not founded")
+
     if lobby.author_id != user.id:
         raise Forbidden("You is not author for this lobby")
     LobbyService.delete(lobby_id)

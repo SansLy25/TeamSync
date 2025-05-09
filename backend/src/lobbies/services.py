@@ -97,5 +97,4 @@ class LobbyService:
         if lobby is not None:
             db.session.delete(lobby)
             db.session.commit()
-            return True
-        return False
+        return True
