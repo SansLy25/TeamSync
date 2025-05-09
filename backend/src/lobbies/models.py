@@ -3,8 +3,8 @@ from app import db
 
 users = db.Table(
     'lobby_users_association', db.metadata,
-    db.Column('lobby_id', db.Integer, db.ForeignKey('lobbies.id')),
-    db.Column('user_id', db.Integer, db.ForeignKey('users.id')),
+    db.Column('lobby_id', db.Integer, db.ForeignKey('lobbies.id', ondelete="CASCADE")),
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id', ondelete="CASCADE")),
 )
 
 
@@ -15,7 +15,6 @@ class Lobby(db.Model):
         'User',
         secondary=users,
         backref="lobbies",
-        cascade="all, delete-orphan",
     )
     platform = db.Column(db.String(30))
     author = db.relationship(
@@ -24,6 +23,12 @@ class Lobby(db.Model):
         single_parent=True,
         cascade="save-update, merge",
     )
+    game = db.relationship(
+        'Game',
+        cascade="save-update, merge",
+        backref="lobbies"
+    )
+    game_id = db.Column(db.Integer, db.ForeignKey('games.id'))
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     skill_level = db.Column(db.Integer)
     goal = db.Column(db.String(100))

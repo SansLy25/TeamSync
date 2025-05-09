@@ -3,6 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel, constr, conint
 
 from users.schemas import UserReadSchema
+from games.schemas import GameSchemaRead
 
 
 class LobbyBaseSchema(BaseModel):
@@ -22,7 +23,8 @@ class LobbyReadSchema(LobbyBaseSchema):
     members: list[UserReadSchema]
     author: UserReadSchema
     filled_slots: int
+    game: GameSchemaRead
 
 
 class LobbyWriteSchema(LobbyBaseSchema):
-    pass
+    game_id: int
