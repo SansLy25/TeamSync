@@ -36,8 +36,10 @@ def create_bid(bid_obj: BidSchemaWrite, user: User):
 def get_bids_list():
     desc_search = request.args.get('description_search')
     game_search = request.args.get('game_search')
-    bids = BidService.get_all(desc=desc_search, gameid=game_search)
-    return BidListSchema(bids=[BidSchemaRead.model_validate(bid, from_attributes=True) for bid in bids])
+    bids = BidService.get_all(desc=desc_search, game_name=game_search)
+    if bids:
+        return BidListSchema(bids=[BidSchemaRead.model_validate(bid, from_attributes=True) for bid in bids])
+    return 404
 
 
 @bids_bp.route("/<int:bid_id>", methods=["GET"])
