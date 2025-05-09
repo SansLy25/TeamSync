@@ -67,7 +67,7 @@ function RegisterPage() {
 
     const validateForm = () => {
         const newErrors = {};
-        const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&,./])[\w@$!%*#?&.,/]{8,}$/;
+        const passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[\]\[@$!%*#?&,./^\-={}:;"'<>~`|\\])[A-Za-z\d\]\[@$!%*#?&,./^\-={}:;"'<>~`|\\]{8,}$/;
 
         if (!formData.username.trim()) {
             newErrors.username = 'Имя пользователя обязательно';

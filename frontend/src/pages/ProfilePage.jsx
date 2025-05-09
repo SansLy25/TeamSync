@@ -16,14 +16,6 @@ function ProfilePage() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
-    const [formData, setFormData] = useState({
-        bio: '',
-        contacts: {
-            telegram: '',
-            discord: '',
-            steam: ''
-        }
-    });
     const [isSaving, setIsSaving] = useState(false);
     const [activeTab, setActiveTab] = useState('lobbies'); // 'lobbies' or 'requests'
 
@@ -36,21 +28,9 @@ function ProfilePage() {
         setError(null);
 
         try {
-            // Получаем полный профиль пользователя
             const profile = await getUserById(currentUser.id);
             setUserProfile(profile);
 
-            // Устанавливаем форму для редактирования
-            setFormData({
-                bio: profile.bio || '',
-                contacts: {
-                    telegram: profile.contacts?.telegram || '',
-                    discord: profile.contacts?.discord || '',
-                    steam: profile.contacts?.steam || ''
-                }
-            });
-
-            // Загрузка лобби
             if (profile.joinedLobbies && profile.joinedLobbies.length > 0) {
                 const lobbiesPromises = profile.joinedLobbies.map(lobbyId => getLobbyById(lobbyId));
                 const lobbiesData = await Promise.all(lobbiesPromises.map(p => p.catch(e => null)));
@@ -58,7 +38,7 @@ function ProfilePage() {
                 setJoinedLobbies(lobbiesData.filter(lobby => lobby !== null));
             }
 
-            // Загружаем запрос пользователя
+            // Загружаем заявки пользователя
             const requests = await getRequestsByCreator(currentUser.id);
             setUserRequests(requests);
         } catch (err) {
@@ -66,41 +46,6 @@ function ProfilePage() {
             console.error(err);
         } finally {
             setIsLoading(false);
-        }
-    };
-
-    const handleChange = (e) => {
-        const {name, value} = e.target;
-
-        if (name.includes('.')) {
-            const [parent, child] = name.split('.');
-            setFormData(prev => ({
-                ...prev,
-                [parent]: {
-                    ...prev[parent],
-                    [child]: value
-                }
-            }));
-        } else {
-            setFormData(prev => ({
-                ...prev,
-                [name]: value
-            }));
-        }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setIsSaving(true);
-
-        try {
-            const updatedProfile = await updateUserProfile(currentUser.id, formData);
-            setUserProfile(updatedProfile);
-            setIsEditing(false);
-        } catch (err) {
-            setError('Не удалось обновить профиль. Попробуйте еще раз.');
-        } finally {
-            setIsSaving(false);
         }
     };
 
@@ -119,6 +64,8 @@ function ProfilePage() {
             </div>
         );
     }
+    let gender = userProfile.gender || 'male'
+    gender = gender === "male" ? "Мужчина" : "Женщина"
 
     return (
         <div className="max-w-5xl mx-auto animate-fade-in">
@@ -136,14 +83,14 @@ function ProfilePage() {
                             <div className="flex flex-col items-center text-center">
                                 <UserAvatar src={userProfile.avatar} size="xl"/>
                                 <h2 className="text-xl font-bold mt-4">{userProfile.username}</h2>
-                                <p className="text-gray-400 capitalize">{userProfile.gender || 'Gamer'}</p>
+                                <p className="text-gray-400 capitalize">{gender}</p>
 
                                 <div className="w-full mt-6">
                                     {!isEditing ? (
                                         <>
                                             <div className="mb-4">
                                                 <h3 className="text-sm font-medium text-gray-300 mb-2">О Себе</h3>
-                                                <p className="text-gray-300">{userProfile.bio || 'Не указано.'}</p>
+                                                <p className="text-gray-300 break-words">{userProfile.bio || 'Не указано.'}</p>
                                             </div>
 
                                             {/* Контакты */}

@@ -81,7 +81,7 @@ function LobbyFilters({ onApplyFilters }) {
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <Filter className="h-5 w-5 mr-2" />
-          <span>Filters</span>
+          <span>Фильтры</span>
         </button>
         
         {Object.values(filters).some(val => val !== '' && val !== false) && (
@@ -90,7 +90,7 @@ function LobbyFilters({ onApplyFilters }) {
             onClick={handleReset}
           >
             <X className="h-5 w-5 mr-1" />
-            <span>Reset</span>
+            <span>Сбросить</span>
           </button>
         )}
       </div>

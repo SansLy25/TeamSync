@@ -20,7 +20,8 @@ class UserSchemaLogin(BaseModel):
 
     @field_validator('password')
     def validate_password(cls, password):
-        pattern = r"^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&,./])[\w@$!%*#?&.,/]{8,}$"
+        pattern = (r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[\]\[@$!%*#?&,./^\-={}:;"\''
+                   r'<>~`|\\])[A-Za-z\d\]\[@$!%*#?&,./^\-={}:;"\'<>~`|\\]{8,}$')
         if re.match(pattern, password):
             return password
 

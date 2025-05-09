@@ -1,5 +1,3 @@
-from http.client import responses
-
 from flask_jwt_extended import (create_access_token)
 from flask import Blueprint
 from werkzeug.exceptions import Unauthorized, NotFound
@@ -59,6 +57,8 @@ def get_user(id: int):
     user = UserService.get(id)
     if user is None:
         raise NotFound("User not found")
+
+    return UserReadSchema.model_validate(user, from_attributes=True)
 
 
 @users_bp.route("/", methods=["GET"])
