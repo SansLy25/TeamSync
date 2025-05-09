@@ -11,9 +11,19 @@ users = db.Table(
 class Lobby(db.Model):
     __tablename__ = "lobbies"
     id = db.Column(db.Integer, primary_key=True)
-    members = db.relationship('User', secondary=users, backref="lobbies")
+    members = db.relationship(
+        'User',
+        secondary=users,
+        backref="lobbies",
+        cascade="all, delete-orphan",
+    )
     platform = db.Column(db.String(30))
-    author = db.relationship('User', backref="authored_lobbies")
+    author = db.relationship(
+        'User',
+        backref="authored_lobbies",
+        single_parent=True,
+        cascade="save-update, merge",
+    )
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     skill_level = db.Column(db.Integer)
     goal = db.Column(db.String(100))

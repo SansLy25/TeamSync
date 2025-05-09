@@ -13,6 +13,9 @@ class LobbyBaseSchema(BaseModel):
     description: str
     start_time: datetime
 
+    class Config:
+        from_attributes = True
+
 
 class LobbyReadSchema(LobbyBaseSchema):
     id: int
