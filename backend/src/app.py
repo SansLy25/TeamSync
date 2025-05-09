@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 from os import getenv
 
 from extensions import db, migrate, jwt, swagger
+from lobbies.views import lobbies_bp
 
 from users.views import users_bp
 from games.views import games_bp
@@ -68,6 +69,7 @@ def register_blueprints(app):
     app.register_blueprint(users_bp)
     app.register_blueprint(games_bp)
     app.register_blueprint(bids_bp)
+    app.register_blueprint(lobbies_bp)
 
 
 def register_extensions(app):

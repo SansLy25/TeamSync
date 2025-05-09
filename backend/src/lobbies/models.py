@@ -19,3 +19,4 @@ class Lobby(db.Model):
     slots = db.Column(db.Integer)
     filled_clots = db.Column(db.Integer)
     start_time = db.Column(db.DateTime)
+    description = db.Column(db.Text)

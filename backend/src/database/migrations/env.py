@@ -7,6 +7,7 @@ from alembic import context
 from users import models
 from games import models
 from bids import models
+from lobbies import models
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
