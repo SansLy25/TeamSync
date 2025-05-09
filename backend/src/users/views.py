@@ -5,7 +5,7 @@ from werkzeug.exceptions import Unauthorized, NotFound
 from core.rest_api_extension import rest_api
 from users.models import User
 from users.schemas import UserSchemaLogin, TokenSchema, \
-    UserSchemaSignUp, UserReadSchema, UsersListSchema, UsersListSchema, \
+    UserSchemaSignUp, UserReadSchema, UsersListSchema, \
     UserNotFoundSchema
 from users.services import UserService
 
@@ -48,13 +48,13 @@ def protected_endpoint(user: User):
     return UserReadSchema.model_validate(user, from_attributes=True), 200
 
 
-@users_bp.route("/<int:id>", methods=["GET"])
+@users_bp.route("/<int:user_id>", methods=["GET"])
 @rest_api(
     description="Получение пользователя по id",
     responses=[{200: UserReadSchema}, {404: UserNotFoundSchema}]
 )
-def get_user(id: int):
-    user = UserService.get(id)
+def get_user(user_id: int):
+    user = UserService.get(user_id)
     if user is None:
         raise NotFound("User not found")
 

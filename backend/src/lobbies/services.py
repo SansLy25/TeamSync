@@ -19,7 +19,7 @@ class LobbyService:
             min_skill=None,
             max_skill=None,
             open_slots=None,
-            search_game=None
+            search_game=None,
     ):
         query = db.session.query(Lobby).join(Game)
 
@@ -36,6 +36,11 @@ class LobbyService:
             query = query.filter(Lobby.platform == platform)
 
         return query.all()
+
+    @staticmethod
+    def get_authors_list(user: User):
+        return db.session.query(Lobby).filter(Lobby.author_id == user.id)
+
 
     @staticmethod
     def create(user: User, lobby_obj: LobbyWriteSchema):
