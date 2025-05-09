@@ -31,7 +31,7 @@ class LobbyWriteSchema(LobbyBaseSchema):
 
 
 class LobbyListSchema(BaseModel):
-    lobbies: LobbyReadSchema
+    lobbies: list[LobbyReadSchema]
 
     class Config:
         from_attributes = True

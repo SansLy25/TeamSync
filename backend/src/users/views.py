@@ -19,7 +19,7 @@ users_bp = Blueprint('users', __name__, url_prefix='/api/users')
 )
 def signup(user_creds: UserSchemaSignUp):
     user = UserService.create(user_creds)
-    access_token = create_access_token(identity=str(user.id))
+    access_token = create_access_token(identity=str(user.id), expires_delta=False)
     user.token = access_token
     return TokenSchema.model_validate(user, from_attributes=True), 201
 
@@ -36,7 +36,7 @@ def login(user_creds: UserSchemaLogin):
     if user is None:
         raise Unauthorized("Username or password incorrect")
 
-    access_token = create_access_token(identity=user.username)
+    access_token = create_access_token(identity=str(user.id), expires_delta=False)
     user.token = access_token
     return TokenSchema.model_validate(user, from_attributes=True), 200
 

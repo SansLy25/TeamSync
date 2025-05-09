@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from pydantic import BaseModel
+from types import SimpleNamespace
 from werkzeug.exceptions import NotFound
 
 from core.rest_api_extension import rest_api
@@ -48,18 +48,18 @@ def get_lobby(lobby_id: int):
 def get_list_lobby():
     query = request.args
     min_skill = query.get("min_skill")
-    max_skill = query.get("min_skill")
+    max_skill = query.get("max_skill")
     lobbies = LobbyService.get_list(
         platform=query.get('platform'),
         min_skill=int(min_skill) if min_skill else None,
         max_skill=int(max_skill) if max_skill else None,
         search_game=query.get("search_game"),
-        open_slots=query.get("open_slots").lower() == "true"
+        open_slots=query.get("open_slots") == "true"
     )
-    lobbies_obj = object()
-    lobbies_obj.lobbies = lobbies
 
-    return LobbyListSchema.model_validate(lobbies_obj, from_attributes=True)
+    return LobbyListSchema(
+        lobbies=[LobbyReadSchema.model_validate(lobby, from_attributes=True)
+                 for lobby in lobbies])
 
 
 @lobbies_bp.route("/<int:lobby_id>/join", methods=["PATCH"])

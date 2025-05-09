@@ -21,7 +21,7 @@ class LobbyService:
             open_slots=None,
             search_game=None
     ):
-        query = db.session.query(User).join(Game)
+        query = db.session.query(Lobby).join(Game)
 
         if min_skill:
             query = query.filter(Lobby.skill_level >= min_skill)
