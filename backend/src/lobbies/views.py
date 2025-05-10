@@ -11,7 +11,7 @@ from users.models import User
 lobbies_bp = Blueprint("lobbies", __name__, url_prefix="/api/lobbies")
 
 
-@lobbies_bp.route("/", methods=["POST"])
+@lobbies_bp.route("", methods=["POST"])
 @rest_api(
     description="Создание нового лобби",
     responses=[{201: LobbyReadSchema}]
@@ -33,7 +33,7 @@ def get_lobby(lobby_id: int):
     return LobbyReadSchema.model_validate(lobby, from_attributes=True)
 
 
-@lobbies_bp.route("/", methods=["GET"])
+@lobbies_bp.route("", methods=["GET"])
 @rest_api(
     description="Получение списка лобби с фильтрацией",
     responses=[{200: LobbyListSchema}],

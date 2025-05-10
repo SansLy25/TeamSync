@@ -4,7 +4,11 @@ import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
 function LobbyCard({ lobby }) {
+  console.log(lobby)
   const { id, name, game, platform, slots, filledSlots, scheduledTime, skillLevel, goal } = lobby;
+  console.log(scheduledTime)
+  console.log(typeof scheduledTime)
+
 
   const formattedTime = format(scheduledTime, 'dd MMMM yyyy - HH:mm', { locale: ru});
 

@@ -26,6 +26,7 @@ function LobbiesPage() {
       const data = await getAllLobbies();
       setLobbies(data);
       setFilteredLobbies(data);
+      console.log(data)
     } catch (err) {
       setError('Не удалось загрузить лобби. Попробуйте еще раз.');
       console.error(err);
@@ -40,6 +41,7 @@ function LobbiesPage() {
     
     try {
       const filtered = await filterLobbies(filters);
+      console.log(filtered)
       setFilteredLobbies(filtered);
     } catch (err) {
       setError('Не удалось применить фильтры. Попробуйте еще раз.');
@@ -132,7 +134,10 @@ function LobbiesPage() {
           ) : filteredLobbies.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-6">
               {filteredLobbies.map(lobby => (
-                <LobbyCard key={lobby.id} lobby={lobby} />
+                <LobbyCard
+                  key={lobby.id}
+                  lobby={lobby}
+                />
               ))}
             </div>
           ) : (
@@ -142,10 +147,6 @@ function LobbiesPage() {
               <p className="text-gray-400 mb-6">
                 Ни одно лобби не соответствует вашим текущим фильтрам или активных лобби нет.
               </p>
-              <button onClick={loadLobbies} className="btn btn-primary">
-                <RefreshCw className="h-5 w-5 mr-2" />
-                Обновить
-              </button>
             </div>
           )}
         </div>

@@ -12,12 +12,11 @@ import {
   Target,
   Calendar,
   MessageCircle,
-  Share2,
   ArrowLeft,
   UserPlus,
   UserMinus,
   User,
-  AlertTriangle
+  AlertTriangle, AtSign, DiscIcon as BrandDiscord, PoundSterling as BrandSteam
 } from 'lucide-react';
 import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
@@ -192,7 +191,7 @@ function LobbyDetailsPage() {
 
             {/* Информация о создателе */}
             <div className="flex items-center mb-6 p-3 bg-dark-600 rounded-lg">
-              <UserAvatar src={creator?.avatar} size="md" />
+              <UserAvatar src={creator?.avatar} size="md"/>
               <div className="ml-3">
                 <p className="font-medium">{creator?.username || 'Неизвестный пользователь'}</p>
                 <p className="text-sm text-gray-400">Создатель</p>
@@ -202,7 +201,7 @@ function LobbyDetailsPage() {
             {/* Основная информация о лобби */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div className="flex items-center p-3 bg-dark-800 rounded-lg">
-                <Calendar className="h-5 w-5 text-primary-400 mr-3" />
+                <Calendar className="h-5 w-5 text-primary-400 mr-3"/>
                 <div>
                   <p className="text-sm text-gray-400">Дата</p>
                   <p className="font-medium">{formattedDate}</p>
@@ -210,7 +209,7 @@ function LobbyDetailsPage() {
               </div>
 
               <div className="flex items-center p-3 bg-dark-800 rounded-lg">
-                <Clock className="h-5 w-5 text-primary-400 mr-3" />
+                <Clock className="h-5 w-5 text-primary-400 mr-3"/>
                 <div>
                   <p className="text-sm text-gray-400">Время</p>
                   <p className="font-medium">{formattedTime}</p>
@@ -218,7 +217,7 @@ function LobbyDetailsPage() {
               </div>
 
               <div className="flex items-center p-3 bg-dark-800 rounded-lg">
-                <Monitor className="h-5 w-5 text-primary-400 mr-3" />
+                <Monitor className="h-5 w-5 text-primary-400 mr-3"/>
                 <div>
                   <p className="text-sm text-gray-400">Платформа</p>
                   <p className="font-medium">{lobby.platform}</p>
@@ -226,7 +225,7 @@ function LobbyDetailsPage() {
               </div>
 
               <div className="flex items-center p-3 bg-dark-800 rounded-lg">
-                <Star className="h-5 w-5 text-primary-400 mr-3" />
+                <Star className="h-5 w-5 text-primary-400 mr-3"/>
                 <div>
                   <p className="text-sm text-gray-400">Уровень навыка</p>
                   <div className="flex items-center">
@@ -249,7 +248,7 @@ function LobbyDetailsPage() {
             {/* Цель */}
             <div className="mb-6">
               <div className="flex items-center mb-2">
-                <Target className="h-5 w-5 text-primary-400 mr-2" />
+                <Target className="h-5 w-5 text-primary-400 mr-2"/>
                 <h3 className="text-lg font-semibold">Цель</h3>
               </div>
               <p className="text-gray-300 pl-7">{lobby.goal}</p>
@@ -263,11 +262,38 @@ function LobbyDetailsPage() {
                 </div>
             )}
 
+            <div className="space-y-4">
+              <h2 className="text-lg font-semibold border-b border-dark-500 pb-2">Контакты для связи</h2>
+              <div>
+                <label htmlFor="contacts.telegram" className="label">Telegram</label>
+                <div>
+                  {creator.contacts?.telegram}
+                  <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-400"/>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="contacts.discord" className="label">Discord</label>
+                <div>
+                  {creator.contacts?.discord}
+                  <BrandDiscord className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-400"/>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="contacts.steam" className="label">Steam</label>
+                <div>
+                  {creator.contacts?.steam}
+                  <BrandSteam className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-400"/>
+                </div>
+              </div>
+            </div>
+
             {/* Секция игроков */}
             <div className="mb-6">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center">
-                  <Users className="h-5 w-5 text-primary-400 mr-2" />
+                  <Users className="h-5 w-5 text-primary-400 mr-2"/>
                   <h3 className="text-lg font-semibold">Игроки</h3>
                 </div>
                 <div className="text-sm">
@@ -280,7 +306,7 @@ function LobbyDetailsPage() {
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mb-4">
                 {players.map(player => (
                     <div key={player.id} className="bg-dark-600 p-3 rounded-lg flex flex-col items-center">
-                      <UserAvatar src={player.avatar} size="md" />
+                      <UserAvatar src={player.avatar} size="md"/>
                       <p className="mt-2 font-medium text-sm truncate w-full text-center">
                         {player.username}
                       </p>
@@ -292,8 +318,9 @@ function LobbyDetailsPage() {
 
                 {/* Пустые слоты */}
                 {[...Array(lobby.slots - lobby.filledSlots)].map((_, i) => (
-                    <div key={`empty-${i}`} className="bg-dark-800 p-3 rounded-lg border border-dashed border-dark-500 flex flex-col items-center justify-center min-h-[96px]">
-                      <User className="h-8 w-8 text-gray-600" />
+                    <div key={`empty-${i}`}
+                         className="bg-dark-800 p-3 rounded-lg border border-dashed border-dark-500 flex flex-col items-center justify-center min-h-[96px]">
+                      <User className="h-8 w-8 text-gray-600"/>
                       <p className="mt-2 text-sm text-gray-500">Свободный слот</p>
                     </div>
                 ))}
@@ -309,7 +336,7 @@ function LobbyDetailsPage() {
                               className="btn btn-ghost text-error-400"
                               disabled={true}
                           >
-                            <AlertTriangle className="h-5 w-5 mr-2" />
+                            <AlertTriangle className="h-5 w-5 mr-2"/>
                             Вы создатель
                           </button>
                       ) : (
@@ -320,12 +347,13 @@ function LobbyDetailsPage() {
                           >
                             {isLeaving ? (
                                 <div className="flex items-center">
-                                  <div className="w-5 h-5 border-t-2 border-b-2 border-current rounded-full animate-spin mr-2"></div>
+                                  <div
+                                      className="w-5 h-5 border-t-2 border-b-2 border-current rounded-full animate-spin mr-2"></div>
                                   <span>Выходим...</span>
                                 </div>
                             ) : (
                                 <>
-                                  <UserMinus className="h-5 w-5 mr-2" />
+                                  <UserMinus className="h-5 w-5 mr-2"/>
                                   Покинуть лобби
                                 </>
                             )}
@@ -340,12 +368,13 @@ function LobbyDetailsPage() {
                       >
                         {isJoining ? (
                             <div className="flex items-center">
-                              <div className="w-5 h-5 border-t-2 border-b-2 border-white rounded-full animate-spin mr-2"></div>
+                              <div
+                                  className="w-5 h-5 border-t-2 border-b-2 border-white rounded-full animate-spin mr-2"></div>
                               <span>Присоединяемся...</span>
                             </div>
                         ) : (
                             <>
-                              <UserPlus className="h-5 w-5 mr-2" />
+                              <UserPlus className="h-5 w-5 mr-2"/>
                               {isLobbyFull() ? 'Лобби заполнено' : 'Присоединиться'}
                             </>
                         )}
@@ -354,20 +383,16 @@ function LobbyDetailsPage() {
               ) : (
                   // Кнопка входа, если пользователь не аутентифицирован
                   <Link to="/login" className="btn btn-primary">
-                    <User className="h-5 w-5 mr-2" />
+                    <User className="h-5 w-5 mr-2"/>
                     Войдите, чтобы присоединиться
                   </Link>
               )}
 
               <button className="btn btn-ghost">
-                <MessageCircle className="h-5 w-5 mr-2" />
+                <MessageCircle className="h-5 w-5 mr-2"/>
                 Контакты создателя
               </button>
 
-              <button className="btn btn-ghost">
-                <Share2 className="h-5 w-5 mr-2" />
-                Поделиться
-              </button>
             </div>
           </div>
         </div>
