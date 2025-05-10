@@ -73,15 +73,7 @@ function LobbiesPage() {
               Создать Лобби
             </Link>
           )}
-          
-          <button 
-            onClick={loadLobbies} 
-            className="btn btn-ghost"
-            disabled={isLoading}
-          >
-            <RefreshCw className={`h-5 w-5 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
-            Обновить
-          </button>
+
         </div>
       </div>
       

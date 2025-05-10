@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import {useParams, useNavigate, Link} from 'react-router-dom';
 import {useAuth} from '../contexts/AuthContext';
-import {getLobbyById, joinLobby, leaveLobby} from '../services/lobbyService';
+import {deleteLobby, getLobbyById, joinLobby, leaveLobby} from '../services/lobbyService';
 import {getUserById} from '../services/userService';
 import UserAvatar from '../components/common/UserAvatar';
 import {
@@ -73,8 +73,8 @@ function LobbyDetailsPage() {
         setIsJoining(true);
 
         try {
-            const updatedLobby = await joinLobby(id, currentUser.id);
-            setLobby(updatedLobby);
+            await joinLobby(id, currentUser.id);
+            setLobby(await getLobbyById(id));
 
             // Добавляем текущего пользователя в список игроков
             setPlayers(prev => [...prev, currentUser]);
@@ -89,20 +89,18 @@ function LobbyDetailsPage() {
         setIsLeaving(true);
 
         try {
-            const updatedLobby = await leaveLobby(id, currentUser.id);
-
-            if (updatedLobby.message) {
-                // Лобби было удалено, так как в нем не осталось игроков
+            if (isCreator()) {
+                await deleteLobby(id)
                 navigate('/lobbies');
-                return;
+            } else {
+                await leaveLobby(id)
             }
 
-            setLobby(updatedLobby);
+            setLobby(await getLobbyById(id));
 
-            // Удаляем текущего пользователя из списка игроков
             setPlayers(prev => prev.filter(player => player.id !== currentUser.id));
         } catch (err) {
-            setError(err.message || 'Не удалось покинуть лобби');
+            setError(err.message || 'Не удалось покинуть или удалить лобби');
         } finally {
             setIsLeaving(false);
         }
@@ -269,21 +267,16 @@ function LobbyDetailsPage() {
                             <div>
                                 <label htmlFor="contacts.telegram" className="label">Telegram</label>
                                 {creator.contacts?.telegram ? creator.contacts?.telegram : "Не указан"}
-                                <AtSign className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-400"/>
                             </div>
 
                             <div>
                                 <label htmlFor="contacts.discord" className="label">Discord</label>
                                 {creator.contacts?.discord ? creator.contacts?.discord : "Не указан"}
-                                <BrandDiscord
-                                    className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-400"/>
                             </div>
 
                             <div>
                                 <label htmlFor="contacts.steam" className="label">Steam</label>
                                 {creator.contacts?.steam ? creator.contacts?.steam : "Не указан"}
-                                <BrandSteam
-                                    className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-primary-400"/>
                             </div>
                         </div>
                     </div>
@@ -353,7 +346,7 @@ function LobbyDetailsPage() {
                                         ) : (
                                             <>
                                                 <UserMinus className="h-5 w-5 mr-2"/>
-                                                Покинуть лобби
+                                                {isCreator() ? "Удалить лобби" : "Покинуть лобби"}
                                             </>
                                         )}
                                     </button>

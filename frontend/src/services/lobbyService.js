@@ -128,69 +128,32 @@ export const updateLobby = (id, updatedData) => {
 };
 
 // Удаление Лобби
-export const deleteLobby = (id) => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            const lobbyIndex = lobbies.findIndex(lobby => lobby.id === id);
-            if (lobbyIndex !== -1) {
-                const deletedLobby = lobbies[lobbyIndex];
-                lobbies = lobbies.filter(lobby => lobby.id !== id);
-                resolve(deletedLobby);
-            } else {
-                reject(new Error('Lobby not found'));
-            }
-        }, 300);
-    });
+export const deleteLobby = async (id)  => {
+    try {
+        await apiClient.delete(`/api/lobbies/${id}`)
+    } catch (error) {
+        if (error.response.status === 403) {
+            throw new Error("Вы не владелец этого лобби")
+        }
+        throw new Error("Что то пошло не так")
+    }
 };
 
 // Присоединение к лобби
-export const joinLobby = (lobbyId, userId) => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            const lobbyIndex = lobbies.findIndex(lobby => lobby.id === lobbyId);
-            if (lobbyIndex === -1) {
-                reject(new Error('Лобби не найдено'));
-                return;
-            }
-
-            const lobby = lobbies[lobbyIndex];
-
-            lobby.players.push(userId);
-            lobby.filledSlots += 1;
-
-            lobbies[lobbyIndex] = lobby;
-            resolve(lobby);
-        }, 300);
-    });
+export const joinLobby = async (lobbyId, userId) => {
+    try {
+        await apiClient.patch(`/api/lobbies/${lobbyId}/join`)
+    } catch (error) {
+        throw new Error("Что то пошло не так")
+    }
 };
 
-// Покинуть Лобби
-export const leaveLobby = (lobbyId, userId) => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            const lobbyIndex = lobbies.findIndex(lobby => lobby.id === lobbyId);
-            if (lobbyIndex === -1) {
-                reject(new Error('Лобби не найдено'));
-                return;
-            }
-
-            const lobby = lobbies[lobbyIndex];
-
-            // Проверка есть ли пользователь в лобби
-            if (!lobby.players.includes(userId)) {
-                reject(new Error('Пользователь не в лобби'));
-                return;
-            }
-
-            // Удаляем пользователя из лобби
-            lobby.players = lobby.players.filter(id => id !== userId);
-            lobby.filledSlots -= 1;
-
-
-            lobbies[lobbyIndex] = lobby;
-            resolve(lobby);
-        }, 300);
-    });
+export const leaveLobby = async (lobbyId, userId) => {
+    try {
+        await apiClient.delete(`/api/lobbies/${lobbyId}/leave`)
+    } catch (error) {
+        throw new Error("Что то пошло не так")
+    }
 };
 
 export const filterLobbies = async (filters) => {

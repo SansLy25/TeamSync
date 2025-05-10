@@ -95,7 +95,8 @@ export function convertToUserData(apiUserData) {
             steam: apiUserData?.steam_contact
         },
         bio: apiUserData?.bio,
-        id: apiUserData?.id
+        id: apiUserData?.id,
+        token: apiUserData?.token,
     };
 }
 
