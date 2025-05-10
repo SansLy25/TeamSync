@@ -22,7 +22,7 @@ function RequestCard({ request }) {
         <div className="flex justify-between items-center text-sm text-gray-400 mb-4">
           <div className="flex items-center">
             <User className="h-4 w-4 mr-1" />
-            <span>Player #{creator}</span>
+            <span>{creator.username}</span>
           </div>
         </div>
         

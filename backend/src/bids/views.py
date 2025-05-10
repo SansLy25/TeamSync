@@ -38,9 +38,7 @@ def get_bids_list():
     desc_search = request.args.get('description_search')
     game_search = request.args.get('game_search')
     bids = BidService.get_all(desc=desc_search, game_name=game_search)
-    if not bids:
-        raise NotFound("there are no such bids")
-    return BidListSchema(bids=[BidSchemaRead.model_validate(bid, from_attributes=True) for bid in bids])
+    return BidListSchema(bids=[BidSchemaRead.model_validate(bid, from_attributes=True) for bid in bids] if bids else [])
 
 
 @bids_bp.route("/<int:bid_id>", methods=["GET"])

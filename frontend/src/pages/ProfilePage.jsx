@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
 import {useAuth} from '../contexts/AuthContext';
 import {getUserById, updateUserProfile} from '../services/userService';
-import {getLobbyById} from '../services/lobbyService';
+import {getLobbyById, getMyLobbies} from '../services/lobbyService';
 import {getRequestsByCreator} from '../services/requestService';
 import UserAvatar from '../components/common/UserAvatar';
 import LobbyCard from '../components/common/LobbyCard';
@@ -30,15 +30,8 @@ function ProfilePage() {
         try {
             const profile = await getUserById(currentUser.id);
             setUserProfile(profile);
-
-            if (profile.joinedLobbies && profile.joinedLobbies.length > 0) {
-                const lobbiesPromises = profile.joinedLobbies.map(lobbyId => getLobbyById(lobbyId));
-                const lobbiesData = await Promise.all(lobbiesPromises.map(p => p.catch(e => null)));
-                // Фильтруем если запрос не удался
-                setJoinedLobbies(lobbiesData.filter(lobby => lobby !== null));
-            }
-
-            // Загружаем заявки пользователя
+            const lobbiesData = await getMyLobbies();
+            setJoinedLobbies(lobbiesData)
             const requests = await getRequestsByCreator(currentUser.id);
             setUserRequests(requests);
         } catch (err) {

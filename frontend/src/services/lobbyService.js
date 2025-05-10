@@ -1,57 +1,9 @@
 import {format, addHours} from 'date-fns';
 import apiClient from "./httpClient.js";
 
-// Имитируем БД для лобби
-let lobbies = [
-    {
-        id: '1',
-        name: 'Apex Legends Ranked Squad',
-        game: 'Apex Legends',
-        platform: 'PC',
-        slots: 3,
-        filledSlots: 2,
-        players: ['1', '3'],
-        creator: '1',
-        scheduledTime: addHours(new Date(), 2).toISOString(),
-        skillLevel: 8,
-        goal: 'Push to Diamond rank',
-        description: 'Looking for one more player to complete our squad. Must have mic and previous experience in ranked.',
-        createdAt: new Date().toISOString()
-    },
-    {
-        id: '2',
-        name: 'Casual Valorant Evening',
-        game: 'Valorant',
-        platform: 'PC',
-        slots: 5,
-        filledSlots: 3,
-        players: ['2', '4', '5'],
-        creator: '2',
-        scheduledTime: addHours(new Date(), 4).toISOString(),
-        skillLevel: 5,
-        goal: 'Have fun and improve together',
-        description: 'Just looking for some chill games. All skill levels welcome but be ready to communicate.',
-        createdAt: new Date().toISOString()
-    },
-    {
-        id: '3',
-        name: 'COD Warzone Trios',
-        game: 'Call of Duty: Warzone',
-        platform: 'Cross-platform',
-        slots: 3,
-        filledSlots: 2,
-        players: ['1', '6'],
-        creator: '6',
-        scheduledTime: addHours(new Date(), 1).toISOString(),
-        skillLevel: 7,
-        goal: 'High kill games and wins',
-        description: 'Looking for an aggressive player who can hold their own in gunfights. Must have a 1.5+ KD.',
-        createdAt: new Date().toISOString()
-    }
-];
 
 function convertToLobbyData(lobbyApiData) {
-    let datas = {
+    return {
         id: lobbyApiData.id,
         name: lobbyApiData.name,
         game: lobbyApiData.game.name,
@@ -66,9 +18,15 @@ function convertToLobbyData(lobbyApiData) {
         description: lobbyApiData.description,
         createdAt: null
     }
-    console.log(typeof datas.scheduledTime)
-    console.log(datas)
-    return datas
+}
+
+export const getMyLobbies = async () => {
+    try {
+        return (await apiClient.get("/api/lobbies/my")).lobbies?.map((lobby) => convertToLobbyData(lobby))
+    } catch (error) {
+        throw new Error("Что то пошло не так")
+    }
+
 }
 
 
@@ -105,26 +63,8 @@ export const createLobby = async (lobbyData) => {
     }
 };
 
-// Обновление лобби
-export const updateLobby = (id, updatedData) => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            const lobbyIndex = lobbies.findIndex(lobby => lobby.id === id);
-            if (lobbyIndex !== -1) {
-                lobbies[lobbyIndex] = {
-                    ...lobbies[lobbyIndex],
-                    ...updatedData
-                };
-                resolve(lobbies[lobbyIndex]);
-            } else {
-                reject(new Error('Lobby not found'));
-            }
-        }, 300);
-    });
-};
-
 // Удаление Лобби
-export const deleteLobby = async (id)  => {
+export const deleteLobby = async (id) => {
     try {
         await apiClient.delete(`/api/lobbies/${id}`)
     } catch (error) {

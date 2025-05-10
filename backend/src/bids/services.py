@@ -11,19 +11,15 @@ class BidService:
 
     @staticmethod
     def get_all(desc=None, game_name=None):
-        game_id = None
+        query = db.session.query(Bid).join(Game)
+
+        if desc:
+            query = query.filter(Bid.description.like(f'%{desc}%'))
+
         if game_name:
-            game_id = db.session.query(Game.id).filter(Game.name == game_name).first()
-            if not game_id:
-                return None
-        if desc and game_id:
-            return db.session.query(Bid).filter(game_id == Bid.game_id).filter(Bid.description.ilike(f'%{desc}%')).all()
-        if desc and not game_id:
-            return db.session.query(Bid).filter(Bid.description.ilike(f'%{desc}%')).all()
-        if not desc and game_id:
-            return db.session.query(Bid).filter(game_id == Bid.game_id).all()
-        if not desc and not game_id:
-            return db.session.query(Bid).all()
+            query = query.filter(Game.name.like(f'%{game_name}%'))
+
+        return query.all()
 
     @staticmethod
     def create(obj: BidSchemaWrite, user) -> BidSchemaRead:
