@@ -92,21 +92,17 @@ export const getLobbyById = async (id) => {
 };
 
 
-export const createLobby = (lobbyData) => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const newLobby = {
-                id: String(lobbies.length + 1),
-                ...lobbyData,
-                filledSlots: 1, // Creator takes one slot
-                players: [lobbyData.creator],
-                createdAt: new Date().toISOString()
-            };
-
-            lobbies.push(newLobby);
-            resolve(newLobby);
-        }, 500);
-    });
+export const createLobby = async (lobbyData) => {
+    try {
+        return convertToLobbyData(await apiClient.post('/api/lobbies', lobbyData))
+    } catch (error) {
+        if (error.response.status === 400) {
+            throw new Error("Невалидные данные формы, проверьте поля")
+        } else if (error.response.status === 401) {
+            throw new Error("Авторизуйте перед созданием")
+        }
+        throw new Error("Что то пошло не так")
+    }
 };
 
 // Обновление лобби

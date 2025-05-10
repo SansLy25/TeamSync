@@ -11,7 +11,6 @@ import {
     Users,
     Target,
     Calendar,
-    MessageCircle,
     ArrowLeft,
     UserPlus,
     UserMinus,
@@ -323,15 +322,6 @@ function LobbyDetailsPage() {
                     <div className="flex flex-col sm:flex-row gap-3">
                         {isAuthenticated ? (
                             isInLobby() ? (
-                                isCreator() ? (
-                                    <button
-                                        className="btn btn-ghost text-error-400"
-                                        disabled={true}
-                                    >
-                                        <AlertTriangle className="h-5 w-5 mr-2"/>
-                                        Вы создатель
-                                    </button>
-                                ) : (
                                     <button
                                         className="btn btn-outline text-error-400 border-error-400 hover:bg-error-400 hover:text-white"
                                         onClick={handleLeaveLobby}
@@ -350,7 +340,6 @@ function LobbyDetailsPage() {
                                             </>
                                         )}
                                     </button>
-                                )
                             ) : (
                                 // Кнопка присоединения, если пользователь не в лобби
                                 <button
