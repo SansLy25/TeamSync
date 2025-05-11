@@ -147,7 +147,7 @@ function CreateLobbyPage() {
                 gameId = gameOptions.find((game) => game.name === actualGame).id
             }
 
-
+            scheduledDateTime.setHours(scheduledDateTime.getHours() + 3);
             const lobbyData = {
                 name: formData.name,
                 game_id: gameId,
@@ -161,7 +161,6 @@ function CreateLobbyPage() {
 
             const newLobby = await createLobby(lobbyData);
             navigate('/lobbies');
-            window.location.reload()
         } catch (error) {
             setErrors({form: 'Не удалось создать лобби. Попробуйте еще раз.'});
         } finally {

@@ -3,7 +3,7 @@ import { Calendar, User } from 'lucide-react';
 import { format } from 'date-fns';
 
 function RequestCard({ request }) {
-  const { id, creator, game, description, createdAt } = request;
+  const { id, creator, game, description, createdAt, creatorUsername } = request;
 
   const formattedDate = format(new Date(createdAt), 'MMM dd, yyyy');
   
@@ -22,7 +22,7 @@ function RequestCard({ request }) {
         <div className="flex justify-between items-center text-sm text-gray-400 mb-4">
           <div className="flex items-center">
             <User className="h-4 w-4 mr-1" />
-            <span>{creator.username}</span>
+            <span>{creatorUsername}</span>
           </div>
         </div>
         

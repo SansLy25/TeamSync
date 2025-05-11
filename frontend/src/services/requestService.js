@@ -1,37 +1,12 @@
 // Имитируем запросы
 import apiClient from "./httpClient.js";
 
-let requests = [
-    {
-        id: '1',
-        creator: '1',
-        game: 'League of Legends',
-        description: 'Looking for a support main to duo with. Gold rank, play mostly evenings.',
-        createdAt: new Date().toISOString(),
-        preferences: 'Mic required, non-toxic players only'
-    },
-    {
-        id: '2',
-        creator: '2',
-        game: 'Minecraft',
-        description: 'Starting a new survival server, looking for creative builders to join our community.',
-        createdAt: new Date().toISOString(),
-        preferences: 'Any experience level welcome, must be 18+'
-    },
-    {
-        id: '3',
-        creator: '3',
-        game: 'Fortnite',
-        description: 'Need a squad for Arena mode. I am trying to reach Champion division.',
-        createdAt: new Date().toISOString(),
-        preferences: 'Looking for players who can build well and have good game sense'
-    }
-];
 
 function convertToRequestData(requestApiData) {
     return {
         id: requestApiData.id,
         creator: requestApiData.author.id,
+        creatorUsername: requestApiData.author.username,
         game: requestApiData.game.name,
         description: requestApiData.description,
         createdAt: new Date().toISOString(),
