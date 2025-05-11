@@ -149,7 +149,7 @@ function ProfilePage() {
                                 }`}
                                 onClick={() => setActiveTab('requests')}
                             >
-                                Мои запросы
+                                Мои заявки
                             </button>
                         </div>
 
@@ -179,9 +179,9 @@ function ProfilePage() {
                                 ) : (
                                     <div className="text-center py-8">
                                         <Mail className="h-12 w-12 mx-auto text-gray-500 mb-3"/>
-                                        <h3 className="text-lg font-medium mb-2">Запросы не созданы</h3>
-                                        <p className="text-gray-400 mb-4">Вы еще не создали ни одного запроса.</p>
-                                        <a href="/create-request" className="btn btn-primary"> Создать запрос</a>
+                                        <h3 className="text-lg font-medium mb-2">Заявки не созданы</h3>
+                                        <p className="text-gray-400 mb-4">Вы еще не создали ни одной заявки.</p>
+                                        <a href="/create-request" className="btn btn-primary"> Создать заявку</a>
                                     </div>
                                 )
                             )}

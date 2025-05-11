@@ -5,20 +5,6 @@ import {createLobby} from '../services/lobbyService';
 import {Calendar, Clock, Users, Monitor, Star, Target, FileText} from 'lucide-react';
 import {getGames, createGame} from '../services/gameService'
 
-const gameOptionsz = [
-    'Apex Legends',
-    'Call of Duty: Warzone',
-    'Counter-Strike 2',
-    'Dota 2',
-    'Fortnite',
-    'League of Legends',
-    'Minecraft',
-    'Overwatch 2',
-    'PUBG',
-    'Rocket League',
-    'Valorant',
-    'Другая',
-];
 
 const platformOptions = [
     'PC',
@@ -52,11 +38,30 @@ function CreateLobbyPage() {
     const today = new Date().toISOString().split('T')[0];
     const [gameOptions, setGameOptions] = useState([])
 
-    useEffect(() => loadGames(), []);
+    useEffect(() => {
+        let isMounted = true;
 
-    const loadGames = async () => {
-        setGameOptions(await getGames())
-    }
+        const loadData = async () => {
+            try {
+                const games = await getGames();
+                if (isMounted) {
+                    setGameOptions(games);
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки игр:', error);
+                if (isMounted) {
+                    setGameOptions([]);
+                }
+            }
+        };
+
+        loadData();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
+
 
     const handleChange = (e) => {
         const {name, value} = e.target;
@@ -90,7 +95,7 @@ function CreateLobbyPage() {
         if (!formData.game) {
             newErrors.game = 'Игра обязательна';
         } else if (formData.game === 'Добавить свою' && !formData.otherGame.trim()) {
-            newErrors.otherGame = 'Уточните укажите игру';
+            newErrors.otherGame = 'Уточните игру';
         }
 
         if (showOtherGame && !otherGame.trim()) {
@@ -175,7 +180,6 @@ function CreateLobbyPage() {
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
-                {/* Basic Info Section */}
                 <div className="space-y-4">
                     <h2 className="text-lg font-semibold border-b border-dark-500 pb-2">Основная Информация</h2>
 

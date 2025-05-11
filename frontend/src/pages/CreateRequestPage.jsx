@@ -1,23 +1,10 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useNavigate} from 'react-router-dom';
 import {useAuth} from '../contexts/AuthContext';
 import {createRequest} from '../services/requestService';
 import {GamepadIcon, FileText} from 'lucide-react';
+import {createGame, getGames} from "../services/gameService.js";
 
-const gameOptions = [
-    'Apex Legends',
-    'Call of Duty: Warzone',
-    'Counter-Strike 2',
-    'Dota 2',
-    'Fortnite',
-    'League of Legends',
-    'Minecraft',
-    'Overwatch 2',
-    'PUBG',
-    'Rocket League',
-    'Valorant',
-    'Other'
-];
 
 function CreateRequestPage() {
     const navigate = useNavigate();
@@ -29,14 +16,49 @@ function CreateRequestPage() {
         preferences: ''
     });
     const [errors, setErrors] = useState({});
+    const [otherGame, setOtherGame] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const [showOtherGame, setShowOtherGame] = useState(false);
+    const [gameOptions, setGameOptions] = useState([]);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadData = async () => {
+            try {
+                const games = await getGames();
+                if (isMounted) {
+                    setGameOptions(games);
+                }
+            } catch (error) {
+                console.error('Ошибка загрузки игр:', error);
+                if (isMounted) {
+                    setGameOptions([]);
+                }
+            }
+        };
+
+        loadData();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
 
     const handleChange = (e) => {
         const {name, value} = e.target;
 
         if (name === 'game') {
-            setShowOtherGame(value === 'Other');
+            if (value === 'Другая') {
+                setShowOtherGame(true);
+            } else {
+                setShowOtherGame(false)
+            }
+
+        }
+
+        if (name === 'otherGame') {
+            setOtherGame(value)
         }
 
         setFormData(prev => ({
@@ -49,9 +71,13 @@ function CreateRequestPage() {
         const newErrors = {};
 
         if (!formData.game) {
-            newErrors.game = 'Game is required';
-        } else if (formData.game === 'Other' && !formData.otherGame.trim()) {
-            newErrors.otherGame = 'Please specify the game';
+            newErrors.game = 'Игра обязательна';
+        } else if (formData.game === 'Добавить свою' && !formData.otherGame.trim()) {
+            newErrors.otherGame = 'Уточните игру';
+        }
+
+        if (showOtherGame && !otherGame.trim()) {
+            newErrors.otherGame = 'Уточните игру'
         }
 
         if (!formData.description.trim()) {
@@ -75,19 +101,26 @@ function CreateRequestPage() {
 
         try {
 
-            const actualGame = formData.game === 'Other' ? formData.otherGame : formData.game;
+            const actualGame = formData.game;
+            let gameId
+
+            if (showOtherGame) {
+                gameId = (await createGame(otherGame)).id;
+            } else {
+                gameId = gameOptions.find((game) => game.name === actualGame).id;
+            }
 
             const requestData = {
-                creator: currentUser.id,
-                game: actualGame,
+                game_id: gameId,
                 description: formData.description,
-                preferences: formData.preferences
+                details: formData.preferences
             };
 
-            const newRequest = await createRequest(requestData);
-            navigate(`/requests/${newRequest.id}`);
+            await createRequest(requestData);
+            navigate(`/requests`);
         } catch (error) {
-            setErrors({form: 'Не удалось создать запрос. Попробуйте еще раз.'});
+            setErrors({form: 'Не удалось создать заявку. Попробуйте еще раз.'});
+            console.log(error)
         } finally {
             setIsLoading(false);
         }
@@ -116,8 +149,9 @@ function CreateRequestPage() {
                                 className={`select pl-10 ${errors.game ? 'border-error-500' : ''}`}
                             >
                                 <option value="">Выберите игру</option>
+                                <option value="Другая">Добавить свою</option>
                                 {gameOptions.map(game => (
-                                    <option key={game} value={game}>{game}</option>
+                                    <option key={game.id} value={game.name}>{game.name}</option>
                                 ))}
                             </select>
                             <GamepadIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400"/>
@@ -183,10 +217,10 @@ function CreateRequestPage() {
                             <div className="flex items-center justify-center">
                                 <div
                                     className="w-5 h-5 border-t-2 border-b-2 border-white rounded-full animate-spin mr-2"></div>
-                                <span>Создание запроса...</span>
+                                <span>Создание заявки...</span>
                             </div>
                         ) : (
-                            'Создать запрос'
+                            'Создать заявку'
                         )}
                     </button>
                 </div>

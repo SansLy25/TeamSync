@@ -62,19 +62,17 @@ export const getRequestById = async (id) => {
 };
 
 // Создаем новую заявку
-export const createRequest = (requestData) => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const newRequest = {
-                id: String(requests.length + 1),
-                ...requestData,
-                createdAt: new Date().toISOString()
-            };
-
-            requests.push(newRequest);
-            resolve(newRequest);
-        }, 500);
-    });
+export const createRequest = async (requestData) => {
+    try {
+        return await apiClient.post('/api/bids', requestData)
+    } catch (error) {
+        if (error?.response?.status === 400) {
+            throw new Error("Невалидные данные формы, проверьте поля")
+        } else if (error.response.status === 401) {
+            throw new Error("Авторизуйте перед созданием")
+        }
+        throw new Error("Что то пошло не так")
+    }
 };
 
 
@@ -114,11 +112,11 @@ export const filterRequests = async (filters) => {
 
 };
 
-export const getRequestsByCreator = (creatorId) => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const creatorRequests = requests.filter(req => req.creator === creatorId);
-            resolve(creatorRequests);
-        }, 300);
-    });
+export const getRequestsByCreator = async (creatorId) => {
+    try {
+        requests = (await apiClient.get("/api/bids")).bids
+        return requests.filter((r) => r.author.id === creatorId ).map((e) => convertToRequestData(e))
+    } catch (error) {
+        throw new Error("Не удалось получить заявки")
+    }
 };

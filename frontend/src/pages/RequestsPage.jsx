@@ -72,14 +72,6 @@ function RequestsPage() {
                         </Link>
                     )}
 
-                    <button
-                        onClick={loadRequests}
-                        className="btn btn-ghost"
-                        disabled={isLoading}
-                    >
-                        <RefreshCw className={`h-5 w-5 mr-2 ${isLoading ? 'animate-spin' : ''}`}/>
-                        Обновить
-                    </button>
                 </div>
             </div>
 
@@ -131,12 +123,8 @@ function RequestsPage() {
                         <div className="bg-dark-700 rounded-lg p-8 text-center">
                             <h3 className="text-xl font-bold mb-2">Заявок не найдено</h3>
                             <p className="text-gray-400 mb-6">
-                                Ни один запрос не соответствует вашим текущим фильтрам или нет активных запросов.
+                                Ни одна заявка не соответствует вашим текущим фильтрам или нет активных заявок.
                             </p>
-                            <button onClick={loadRequests} className="btn btn-secondary">
-                                <RefreshCw className="h-5 w-5 mr-2"/>
-                                обновить
-                            </button>
                         </div>
                     )}
                 </div>
