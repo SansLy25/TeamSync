@@ -51,21 +51,6 @@ export const createRequest = async (requestData) => {
 };
 
 
-export const deleteRequest = (id) => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            const requestIndex = requests.findIndex(req => req.id === id);
-            if (requestIndex !== -1) {
-                const deletedRequest = requests[requestIndex];
-                requests = requests.filter(req => req.id !== id);
-                resolve(deletedRequest);
-            } else {
-                reject(new Error('Заявка не найдена'));
-            }
-        }, 300);
-    });
-};
-
 export const filterRequests = async (filters) => {
     let params = Object()
 
@@ -89,7 +74,7 @@ export const filterRequests = async (filters) => {
 
 export const getRequestsByCreator = async (creatorId) => {
     try {
-        requests = (await apiClient.get("/api/bids")).bids
+        let requests = (await apiClient.get("/api/bids")).bids
         return requests.filter((r) => r.author.id === creatorId ).map((e) => convertToRequestData(e))
     } catch (error) {
         throw new Error("Не удалось получить заявки")
